@@ -57,6 +57,11 @@ fn query_params(opt_query: Option<&str>) -> HashMap<&str,&str>
     params
 }
 
+fn report_error(response: &mut Response<Body>, msg: &str)
+{
+    *response.body_mut() = Body::from(json!({ "error": msg }).to_string())
+}
+
 /// This is our service handler. It receives a Request, routes on its
 /// path, and returns a Future of a Response.
 fn echo(req: Request<Body>) -> BoxFut {
@@ -79,7 +84,7 @@ fn echo(req: Request<Body>) -> BoxFut {
             match params.get("expr")
             {
                 Some(expr) => process_command(dice::command(expr.to_string()), &mut response),
-                None => *response.body_mut() = Body::from(json!({ "error": "Missing required 'expr'." }).to_string()),
+                None => report_error(&mut response, "Missing required 'expr'."),
             }
         }
 
@@ -90,36 +95,19 @@ fn echo(req: Request<Body>) -> BoxFut {
 
         // Percent likely
         (&Method::GET, "/likely") => {
-            let params = query_params(req.uri().query());
-            match params.get("percent")
+            match percent_params(req.uri().query())
             {
-                Some(percent) => {
-                    match percent.parse::<u32>()
-                    {
-                        Ok(p) => process_command(percent::command(p), &mut response),
-                        Err(_) => *response.body_mut() = Body::from(json!({ "error": "'percent' value must be an integer" }).to_string()),
-                    }
-                },
-                None => *response.body_mut() = Body::from(json!({ "error": "Missing required 'percent'." }).to_string()),
+                Ok(percent) => process_command(percent::command(percent), &mut response),
+                Err(msg) => report_error(&mut response, msg),
             }
         }
 
         // Pick Number
         (&Method::GET, "/pick") => {
-            let params = query_params(req.uri().query());
-            match (params.get("low"), params.get("high"))
+            match pick_params(req.uri().query())
             {
-                (Some(low), Some(high)) => {
-                    match (low.parse::<i32>(), high.parse::<i32>())
-                    {
-                        (Ok(l), Ok(h)) => process_command(pick::command(l, h), &mut response),
-                        (Err(_), _) => *response.body_mut() = Body::from(json!({ "error": "'low' value must be an integer" }).to_string()),
-                        (_, Err(_)) => *response.body_mut() = Body::from(json!({ "error": "'high' value must be an integer" }).to_string()),
-                    }
-                },
-                (None, None) => *response.body_mut() = Body::from(json!({ "error": "Missing required 'low' and 'high'." }).to_string()),
-                (None, _) => *response.body_mut() = Body::from(json!({ "error": "Missing required 'low'." }).to_string()),
-                (_, None) => *response.body_mut() = Body::from(json!({ "error": "Missing required 'high'." }).to_string()),
+                Ok((low, high)) => process_command(pick::command(low, high), &mut response),
+                Err(msg) => report_error(&mut response, msg),
             }
         }
 
@@ -130,6 +118,39 @@ fn echo(req: Request<Body>) -> BoxFut {
     };
 
     Box::new(future::ok(response))
+}
+
+fn percent_params(opt_query: Option<&str>) -> Result<u32, &str>
+{
+    let params = query_params(opt_query);
+    match params.get("percent")
+    {
+        Some(percent) => match percent.parse::<u32>()
+        {
+            Ok(p) => Ok(p),
+            Err(_) => Err("'percent' value must be an integer"),
+        },
+        None => Err("Missing required 'percent'."),
+    }
+}
+
+fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), &str>
+{
+    let params = query_params(opt_query);
+    match (params.get("low"), params.get("high"))
+    {
+        (Some(low), Some(high)) => {
+            match (low.parse::<i32>(), high.parse::<i32>())
+            {
+                (Ok(l), Ok(h)) => Ok((l, h)),
+                (Err(_), _) => Err("'low' value must be an integer"),
+                (_, Err(_)) => Err("'high' value must be an integer"),
+            }
+        },
+        (None, None) => Err("Missing required 'low' and 'high'."),
+        (None, _) => Err("Missing required 'low'."),
+        (_, None) => Err("Missing required 'high'."),
+    }
 }
 
 fn main() {
