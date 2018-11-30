@@ -12,6 +12,8 @@ use hyper::{Body, Method, Request, Response, Server, StatusCode};
 use quikdecision::{coin,dice,oracle,percent,pick,select};
 use quikdecision::{Command,Decision,Decider};
 
+use std::collections::HashMap;
+
 /// We need to return different futures depending on the route matched,
 /// and we can do that with an enum, such as `futures::Either`, or with
 /// trait objects.
@@ -41,6 +43,20 @@ fn process_command(cmdres: Result<Command,String>, response: &mut Response<Body>
     }
 }
 
+fn query_params(opt_query: Option<&str>) -> HashMap<&str,&str>
+{
+    let mut params = HashMap::new();
+    if let Some(query) = opt_query
+    {
+        for p in query.split("&")
+        {
+            let kv = p.split("=").take(2).collect::<Vec<&str>>();
+            if kv.len() == 2 { params.insert(kv[0], kv[1]); }
+        }
+    }
+    params
+}
+
 /// This is our service handler. It receives a Request, routes on its
 /// path, and returns a Future of a Response.
 fn echo(req: Request<Body>) -> BoxFut {
@@ -55,6 +71,16 @@ fn echo(req: Request<Body>) -> BoxFut {
         // Flip a coin
         (&Method::GET, "/flip") => {
             process_command(coin::command(), &mut response);
+        }
+
+        // Roll dice
+        (&Method::GET, "/roll") => {
+            let params = query_params(req.uri().query());
+            match params.get("expr")
+            {
+                Some(expr) => process_command(dice::command(expr.to_string()), &mut response),
+                None => *response.body_mut() = Body::from(json!({ "error": "Missing required 'expr'." }).to_string()),
+            }
         }
 
         // Ask the Oracle
