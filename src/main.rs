@@ -5,7 +5,7 @@ extern crate serde_json;
 extern crate quikdecision;
 
 use futures::future;
-use hyper::rt::{Future, Stream};
+use hyper::rt::Future;
 use hyper::service::service_fn;
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
 
@@ -86,6 +86,41 @@ fn echo(req: Request<Body>) -> BoxFut {
         // Ask the Oracle
         (&Method::GET, "/oracle") => {
             process_command(oracle::command(), &mut response);
+        }
+
+        // Percent likely
+        (&Method::GET, "/likely") => {
+            let params = query_params(req.uri().query());
+            match params.get("percent")
+            {
+                Some(percent) => {
+                    match percent.parse::<u32>()
+                    {
+                        Ok(p) => process_command(percent::command(p), &mut response),
+                        Err(_) => *response.body_mut() = Body::from(json!({ "error": "'percent' value must be an integer" }).to_string()),
+                    }
+                },
+                None => *response.body_mut() = Body::from(json!({ "error": "Missing required 'percent'." }).to_string()),
+            }
+        }
+
+        // Pick Number
+        (&Method::GET, "/pick") => {
+            let params = query_params(req.uri().query());
+            match (params.get("low"), params.get("high"))
+            {
+                (Some(low), Some(high)) => {
+                    match (low.parse::<i32>(), high.parse::<i32>())
+                    {
+                        (Ok(l), Ok(h)) => process_command(pick::command(l, h), &mut response),
+                        (Err(_), _) => *response.body_mut() = Body::from(json!({ "error": "'low' value must be an integer" }).to_string()),
+                        (_, Err(_)) => *response.body_mut() = Body::from(json!({ "error": "'high' value must be an integer" }).to_string()),
+                    }
+                },
+                (None, None) => *response.body_mut() = Body::from(json!({ "error": "Missing required 'low' and 'high'." }).to_string()),
+                (None, _) => *response.body_mut() = Body::from(json!({ "error": "Missing required 'low'." }).to_string()),
+                (_, None) => *response.body_mut() = Body::from(json!({ "error": "Missing required 'high'." }).to_string()),
+            }
         }
 
         // The 404 Not Found route...
