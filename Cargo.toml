@@ -1,0 +1,18 @@
+[package]
+name = "quikdecision-hyper"
+version = "0.1.0"
+authors = ["G. Wade Johnson <gwadej@anomaly.org>"]
+description = "Make random decisions using one of a few different methods."
+readme = "README.md"
+keywords = ["decisions", "random", "coin flip", "dice roll"]
+categories = ["command-line-utilities", "games"]
+license = "MIT"
+
+[dependencies]
+
+rand = "0.5.5"
+regex = "1"
+quikdecision = { git = "https://github.com/gwadej/quikdecision_rust" }
+hyper = "0.12"
+futures = "0.1.25"
+serde_json = "1.0"
