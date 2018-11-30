@@ -111,6 +111,15 @@ fn echo(req: Request<Body>) -> BoxFut {
             }
         }
 
+        // Select string
+        (&Method::GET, "/select") => {
+            match select_params(req.uri().query())
+            {
+                Ok(strvec) => process_command(select::command(strvec), &mut response),
+                Err(msg) => report_error(&mut response, msg),
+            }
+        }
+
         // The 404 Not Found route...
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;
@@ -150,6 +159,16 @@ fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), &str>
         (None, None) => Err("Missing required 'low' and 'high'."),
         (None, _) => Err("Missing required 'low'."),
         (_, None) => Err("Missing required 'high'."),
+    }
+}
+
+fn select_params(opt_query: Option<&str>) -> Result<Vec<String>, &str>
+{
+    let params = query_params(opt_query);
+    match params.get("strings")
+    {
+        Some(strings) => Ok(strings.split(",").map(|s| s.to_string()).collect::<Vec<String>>()),
+        None => Err("Missing required 'strings'."),
     }
 }
 
