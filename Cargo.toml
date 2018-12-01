@@ -16,3 +16,6 @@ quikdecision = { git = "https://github.com/gwadej/quikdecision_rust" }
 hyper = "0.12"
 futures = "0.1.25"
 serde_json = "1.0"
+
+[lib]
+name = "qdweb"
