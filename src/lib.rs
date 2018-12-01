@@ -13,19 +13,16 @@ pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
     let body = match cmdres
     {
         Ok(cmd) => {
-            let json = match cmd.decide()
+            Body::from(match cmd.decide()
             {
                 Decision::Text(value) => { json!({ "value": value }) },
                 Decision::LabelledText{label, value} => { json!({ "label": label, "value": value }) },
                 Decision::Num(value) => { json!({ "value": value }) },
                 Decision::AnnotatedNum{value, extra} => { json!({ "value": value, "extra": extra }) },
                 Decision::Bool(value) => { json!({ "value": value }) },
-            };
-            Body::from(json.to_string())
+            }.to_string())
         },
-        Err(msg) => {
-            Body::from(json!({ "error": msg }).to_string())
-        },
+        Err(msg) => Body::from(json!({ "error": msg }).to_string()),
     };
     Response::builder()
         .header("Content-Type", "application/json")
