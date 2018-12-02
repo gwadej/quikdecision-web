@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>QuikDecision</title>
+<style type="text/css">
+    #error { color: red; }
+</style>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+function make_decision(id) {
+    let form = $(id +" form");
+    $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: "GET",
+        dataType: "json"
+    })
+    .done(function(json) {
+        if(json.error)
+        {
+            $("#error").show();
+            $("#error .msg").text(json.error);
+        }
+        else
+        {
+            $("#error").hide();
+            for(fld in json)
+            {
+                $(id + " ." + fld).text( json[fld] );
+            }
+        }
+    })
+    .fail(function(xhr, status, errorThrown) {
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        $("#error .msg").text("JSON request failure");
+        $("#error").show();
+    })
+}
+$( document ).ready(function() {
+    $("#error").hide();
+    $("#coin button").click(function(event) {
+        make_decision("#coin", {});
+    });
+    $("#dice button").click(function(event) {
+        make_decision("#dice");
+    });
+    $("#oracle button").click(function(event) {
+        make_decision("#oracle");
+    });
+    $("#percent button").click(function(event) {
+        make_decision("#percent");
+    });
+    $("#pick button").click(function(event) {
+        make_decision("#pick");
+    });
+    $("#select button").click(function(event) {
+        make_decision("#select");
+    });
+});
+</script>
+<div id="error">Error: <span class="msg"> </span></div>
+<div id="coin">
+<form method="GET" action="/flip">
+    <button name="flip" type="button">Flip</button>
+    <div class="value"> </div>
+</form>
+</div>
+<div id="dice">
+<form method="GET" action="/roll">
+    <label for="expr">Dice Expression: </label><input id="expr" name="expr" type="text" width="100" value="1d6"/>
+    <button name="roll" type="button">Roll</button>
+    <div><span class="value"> </span>: <span class="extra"> </span></div>
+</form>
+</div>
+<div id="oracle">
+<form method="GET" action="/oracle">
+    <button name="ask" type="button">Ask</button>
+    <div>
+        <span class="label"> </span>
+        <q class="value"> </q>
+    </div>
+</form>
+</div>
+<div id="percent">
+<form method="GET" action="/likely">
+    <label for="percent">Percent Likely: </label><input id="percent" name="percent" type="number" min="1" max="99" value="50"/>
+    <button name="guess" type="button">Guess</button>
+    <div class="value"> </div>
+</form>
+</div>
+<div id="pick">
+<form method="GET" action="/pick">
+    <label for="low">Low: </label><input id="low" name="low" type="number" value="1"/>
+    <label for="high">High: </label><input id="high" name="high" type="number" value="10"/>
+    <button name="pick" type="button">Pick</button>
+    <div class="value"> </div>
+</form>
+</div>
+<div id="select">
+<form method="GET" action="/select">
+    <label for="strings">Comma-separated list of strings: </label><br />
+    <input id="strings" name="strings" type="text" value=""/>
+    <button name="select" type="button">Select</button>
+    <div class="value"> </div>
+</form>
+</div>
+</body>
+</html>
+

@@ -2,9 +2,11 @@ extern crate hyper;
 extern crate quikdecision;
 #[macro_use]
 extern crate serde_json;
+extern crate percent_encoding;
 
 use std::collections::HashMap;
 use hyper::{Body,  Response};
+use percent_encoding::percent_decode;
 
 use quikdecision::{Command, Decision, Decider};
 
@@ -30,7 +32,16 @@ pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
         .unwrap()
 }
 
-pub fn query_params(opt_query: Option<&str>) -> HashMap<&str,&str>
+fn url_decode(input: &str) -> String
+{
+    percent_decode(&(input.bytes().collect::<Vec<u8>>()))
+        .decode_utf8()
+        .unwrap()
+        .to_owned()
+        .to_string()
+}
+
+pub fn query_params(opt_query: Option<&str>) -> HashMap<&str,String>
 {
     let mut params = HashMap::new();
     if let Some(query) = opt_query
@@ -38,7 +49,7 @@ pub fn query_params(opt_query: Option<&str>) -> HashMap<&str,&str>
         for p in query.split("&")
         {
             let kv = p.split("=").take(2).collect::<Vec<&str>>();
-            if kv.len() == 2 { params.insert(kv[0], kv[1]); }
+            if kv.len() == 2 { params.insert(kv[0], url_decode(kv[1])); }
         }
     }
     params

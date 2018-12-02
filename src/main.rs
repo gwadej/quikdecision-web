@@ -7,6 +7,8 @@ use futures::future;
 use hyper::rt::Future;
 use hyper::service::service_fn;
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
+use std::fs::File;
+use std::io::prelude::*;
 
 use quikdecision::{coin,dice,oracle,percent,pick,select};
 //use quikdecision::{Command,Decision,Decider};
@@ -29,10 +31,16 @@ fn echo(req: Request<Body>) -> BoxFut {
     {
         // Serve some instructions at /
         (&Method::GET, "/") => {
-            Response::builder()
-                .header("Content-Type", "text/html")
-                .body(Body::from("Try POSTing data to /echo"))
-                .unwrap()
+            match load_file("static/quikdecision.html")
+            {
+                Ok(content) => {
+                    Response::builder()
+                        .header("Content-Type", "text/html")
+                        .body(Body::from(content))
+                        .unwrap()
+                },
+                Err(msg) => report_error(&msg),
+            }
         }
 
         // Flip a coin
@@ -92,6 +100,22 @@ fn echo(req: Request<Body>) -> BoxFut {
     };
 
     Box::new(future::ok(response))
+}
+
+fn load_file(name: &str) -> Result<String,String>
+{
+    let mut file = match File::open(name)
+    {
+        Ok(file) => file,
+        Err(_) => return Err(format!("Cannot open file: '{}'", name)),
+    };
+    let mut contents = String::new();
+    match file.read_to_string(&mut contents)
+    {
+        Ok(_) => Ok(contents),
+        Err(_) => Err(format!("Failure reading file: '{}'", name)),
+
+    }
 }
 
 fn main() {
