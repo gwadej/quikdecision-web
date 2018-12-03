@@ -3,6 +3,18 @@
 <head>
 <title>QuikDecision</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<style>
+    .extra {
+        font-size: 80%;
+        color: #888;
+    }
+    #strings {
+        font-size: 80%;
+    };
+    .card-body div.answer {
+        border: 1 black solid
+    }
+</style>
 </head>
 <body>
 <div class="container-fluid">
@@ -20,10 +32,14 @@
 
             <div id="collapseCoin" class="collapse" aria-labelledby="headingCoin" data-parent="#deciders">
                 <div class="card-body">
-                    <form method="GET" action="/flip">
-                        <button class="decide" name="flip" type="button">Flip</button>
-                        <span class="value"> </span>
-                    </form>
+                    <div class="row">
+                        <div class="col-2">
+                            <form method="GET" action="/flip">
+                                <button class="decide" name="flip" type="button">Flip</button>
+                            </form>
+                        </div>
+                        <div class="col-3 answer"> <span class="value"> </span> </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,11 +54,15 @@
 
             <div id="collapseDice" class="collapse " aria-labelledby="headingDice" data-parent="#deciders">
                 <div class="card-body">
-                    <form method="GET" action="/roll">
-                        <label for="expr">Dice Expression: </label><input id="expr" name="expr" type="text" width="100" value="1d6"/>
-                        <button class="decide" name="roll" type="button">Roll</button>
-                        <div><span class="value"> </span>: <span class="extra"> </span></div>
-                    </form>
+                    <div class="row">
+                        <div class="col-2">
+                        <form method="GET" action="/roll">
+                            <label for="expr">Dice Expression: </label><input id="expr" name="expr" type="text" width="100" value="1d6"/>
+                            <button class="decide" name="roll" type="button">Roll</button>
+                        </form>
+                        </div>
+                        <div class="col-3 answer"><span class="value"> </span>: <span class="extra"> </span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,13 +77,17 @@
 
             <div id="collapseOracle" class="collapse " aria-labelledby="headingOracle" data-parent="#deciders">
                 <div class="card-body">
-                    <form method="GET" action="/oracle">
-                        <button class="decide" name="ask" type="button">Ask</button>
-                        <div>
+                    <div class="row">
+                        <div class="col-2">
+                            <form method="GET" action="/oracle">
+                                <button class="decide" name="ask" type="button">Ask</button>
+                            </form>
+                        </div>
+                        <div class="col-3 answer">
                             <span class="label"> </span>
                             <q class="value"> </q>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,11 +102,15 @@
 
             <div id="collapsePercent" class="collapse " aria-labelledby="headingPercent" data-parent="#deciders">
                 <div class="card-body">
-                    <form method="GET" action="/likely">
-                        <label for="percent">Percent Likely: </label><input id="percent" name="percent" type="number" min="1" max="99" value="50"/>
-                        <button class="decide" name="guess" type="button">Guess</button>
-                        <div class="value"> </div>
-                    </form>
+                    <div class="row">
+                        <div class="col-2">
+                            <form method="GET" action="/likely">
+                                <label for="percent">Percent Likely: </label><input id="percent" name="percent" type="number" min="1" max="99" value="50"/>
+                                <button class="decide" name="guess" type="button">Guess</button>
+                            </form>
+                        </div>
+                        <div class="col-3 answer"><span class="value"> </span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,12 +125,16 @@
 
             <div id="collapsePick" class="collapse " aria-labelledby="headingPick" data-parent="#deciders">
                 <div class="card-body">
-                    <form method="GET" action="/pick">
-                        <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/>
-                        <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/>
-                        <button class="decide" name="pick" type="button">Pick</button>
-                        <div class="value"> </div>
-                    </form>
+                    <div class="row">
+                        <div class="col-2">
+                            <form method="GET" action="/pick">
+                                <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/>
+                                <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/>
+                                <button class="decide" name="pick" type="button">Pick</button>
+                            </form>
+                        </div>
+                        <div class="col-3 answer"><span class="value"> </span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,12 +149,16 @@
 
             <div id="collapseSelect" class="collapse " aria-labelledby="headingSelect" data-parent="#deciders">
                 <div class="card-body">
-                    <form method="GET" action="/select">
-                        <label for="strings">Comma-separated list of strings:</label><br />
-                        <input id="strings" name="strings" type="text" value=""/>
-                        <button class="decide" name="select" type="button">Select</button>
-                        <div class="value"> </div>
-                    </form>
+                    <div class="row">
+                        <div class="col-2">
+                            <form method="GET" action="/select">
+                                <label for="strings">Strings, one per line:</label><br />
+                                <textarea cols="30" rows="5" id="strings" name="string"></textarea><br />
+                                <button class="decide" name="select" type="button">Select</button>
+                            </form>
+                        </div>
+                        <div class="col-3 answer"><span class="value"> </span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,11 +167,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
-function make_decision(id) {
+function make_decision(id, data) {
     let form = $(id +" form");
     $.ajax({
         url: form.attr("action"),
-        data: form.serialize(),
+        data: data || form.serialize(),
         type: "GET",
         dataType: "json"
     })
@@ -148,6 +184,7 @@ function make_decision(id) {
         else
         {
             $("#error").hide();
+            $(id + " .answer").show();
             for(fld in json)
             {
                 $(id + " ." + fld).text( json[fld] );
@@ -163,6 +200,7 @@ function make_decision(id) {
 }
 $( document ).ready(function() {
     $("#error").hide();
+    $(".answer").hide();
     $("#coin button.decide").click(function(event) {
         make_decision("#coin", {});
     });
@@ -179,7 +217,8 @@ $( document ).ready(function() {
         make_decision("#pick");
     });
     $("#select button.decide").click(function(event) {
-        make_decision("#select");
+        let val = $("#strings").val().replace(/\n/g, ",");
+        make_decision("#select", { strings: val });
     });
 });
 </script>
