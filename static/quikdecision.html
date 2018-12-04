@@ -14,155 +14,242 @@
     .card-body div.answer {
         border: 1 black solid
     }
+    .card-title {
+        margin-bottom: 0
+    }
+    ul.tab-ctrl {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    ul.tab-ctrl .btn {
+        width: 100%;
+    }
+    button.btn-sm {
+        padding: 0.1em;
+    }
+    div.help {
+        clear: both;
+        margin-top: 2em;
+        color: #888;
+    }
+    footer {
+        margin-top: 2rem;
+        font-size: 75%;
+        color: #888;
+    }
 </style>
 </head>
 <body>
 <div class="container-fluid">
     <h2>QuikDecision</h2>
-    <div id="error" class="alert alert-danger">Error: <span class="msg"> </span></div>
-    <div class="accordion" id="deciders">
-        <div id="coin" class="card">
-            <div class="card-header" id="headingCoin">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseCoin" aria-expanded="true" aria-controls="collapseCoin">
-                        Flip a Coin
-                    </button>
-                </h5>
+    <div id="error" class="alert alert-danger invisible">Error: <span class="msg"> </span></div>
+    <div class="row no-gutters">
+        <div class="offset-1 col-1">
+            <ul class="tab-ctrl float-right">
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCoin" aria-expanded="true" aria-controls="collapseCoin">
+                Flip a Coin
+            </button></li>
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseDice" aria-expanded="true" aria-controls="collapseDice">
+                Roll the Dice
+            </button></li>
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseOracle" aria-expanded="true" aria-controls="collapseOracle">
+                Ask the Oracle
+            </button></li>
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseLikely" aria-expanded="true" aria-controls="collapseLikely">
+                Percent Likely
+            </button></li>
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapsePick" aria-expanded="true" aria-controls="collapsePick">
+                Pick a Number
+            </button></li>
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseSelect" aria-expanded="true" aria-controls="collapseSelect">
+                Select a String
+            </button></li>
+            </ul>
+        </div>
+        <div class="col-8" id="deciders">
+            <div id="collapseCoin" class="collapse show" data-parent="#deciders">
+                <div id="coin" class="card">
+                    <div class="card-header"><h5 class="card-title">Flip a Coin</h5></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <form method="GET" action="/flip">
+                                    <button class="decide" name="flip" type="button">Flip the Coin</button>
+                                </form>
+                            </div>
+                            <div class="col answer"> <span class="value"> </span> </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#coinHelp">?</button>
+                            <div id="coinHelp" class="collapse help">
+                                Returns one of the two strings <em>Heads</em> or <em>Tails</em>. There is an equal probability of returning either one.
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div id="collapseCoin" class="collapse" aria-labelledby="headingCoin" data-parent="#deciders">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <form method="GET" action="/flip">
-                                <button class="decide" name="flip" type="button">Flip</button>
+            <div id="collapseDice" class="collapse" data-parent="#deciders">
+                <div id="dice" class="card">
+                    <div class="card-header"><h5 class="card-title">Roll the Dice</h5></div> <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                            <form method="GET" action="/roll">
+                                <label for="expr">Dice Expression:</label> <input id="expr" name="expr" type="text" width="100" value="1d6"/>
+                                <button class="decide" name="roll" type="button">Roll</button>
                             </form>
+                            </div>
+                            <div class="col answer">Value: <span class="value"> </span><br />
+                                Roll: <span class="extra"> </span></div>
                         </div>
-                        <div class="col-3 answer"> <span class="value"> </span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="dice" class="card">
-            <div class="card-header" id="headingDice">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseDice" aria-expanded="true" aria-controls="collapseDice">
-                        Roll the Dice
-                    </button>
-                </h5>
-            </div>
-
-            <div id="collapseDice" class="collapse " aria-labelledby="headingDice" data-parent="#deciders">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                        <form method="GET" action="/roll">
-                            <label for="expr">Dice Expression: </label><input id="expr" name="expr" type="text" width="100" value="1d6"/>
-                            <button class="decide" name="roll" type="button">Roll</button>
-                        </form>
-                        </div>
-                        <div class="col-3 answer"><span class="value"> </span>: <span class="extra"> </span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="oracle" class="card">
-            <div class="card-header" id="headingOracle">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOracle" aria-expanded="true" aria-controls="collapseOracle">
-                        Ask the Oracle
-                    </button>
-                </h5>
-            </div>
-
-            <div id="collapseOracle" class="collapse " aria-labelledby="headingOracle" data-parent="#deciders">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <form method="GET" action="/oracle">
-                                <button class="decide" name="ask" type="button">Ask</button>
-                            </form>
-                        </div>
-                        <div class="col-3 answer">
-                            <span class="label"> </span>
-                            <q class="value"> </q>
+                        <div class="row">
+                            <div class="col-12">
+                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#diceHelp">?</button>
+                            <div id="diceHelp" class="collapse help">
+                                <p>Roll the described combination of dice, returning a number and description of the
+                                roll. The <em>dice expr</em> is a combination of terms of one of three forms joined by <code>+</code>:</p>
+                                <ul>
+                                    <li>{n}d{s}: roll n s-sided dice (3d6)</li>
+                                    <li>{n}x{s}: roll n s-sided exploding dice (2x8)</li>
+                                    <li>{n}: an increment.</li>
+                                </ul>
+                                <p>The number of sides supported are 4, 6, 8, 10, 12, 20, or 100. Exploding dice
+            work much like normal, except when a die rolls the maximum value for the die,
+            then it is re-rolled to generate a value to add to the original roll. This may
+            happen more than once.</p>
+                                <p>The return is the sum of all of the rolls followed by a string representing the
+                                individual rolls.</p>
+                            <p>Normal dice are represented by the expression, followed by the results of the
+                            individual die rolls in parens: <code>3d6(3+5+1)</code>.</p>
+                            <p>Exploding dice are represented by the dice expression followed by an expression
+            in angle brackets. The expression is made of the results of each individual die
+            in parens, with any die that exploded being followed by an <code>!</code>, and the re-roll
+            added as needed: <code>3x6&lt;(1)+(6!+5)+(2)&gt;</code>.</p>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="percent" class="card">
-            <div class="card-header" id="headingPercent">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePercent" aria-expanded="true" aria-controls="collapsePercent">
-                        Percent Likely
-                    </button>
-                </h5>
-            </div>
-
-            <div id="collapsePercent" class="collapse " aria-labelledby="headingPercent" data-parent="#deciders">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <form method="GET" action="/likely">
-                                <label for="percent">Percent Likely: </label><input id="percent" name="percent" type="number" min="1" max="99" value="50"/>
-                                <button class="decide" name="guess" type="button">Guess</button>
-                            </form>
+            <div id="collapseOracle" class="collapse" data-parent="#deciders">
+                <div id="oracle" class="card">
+                    <div class="card-header"><h5 class="card-title">Ask the Oracle</h5></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <form method="GET" action="/oracle">
+                                    <button class="decide" name="ask" type="button">Ask the Oracle</button>
+                                </form>
+                            </div>
+                            <div class="col answer">
+                                <span class="label"> </span>
+                                <q class="value"> </q>
+                            </div>
                         </div>
-                        <div class="col-3 answer"><span class="value"> </span></div>
+                        <div class="row">
+                            <div class="col-12">
+                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#oracleHelp">?</button>
+                            <div id="oracleHelp" class="collapse help">
+                                This command returns a string randomly selected from the Oracle's set of
+            9 positive answers, 9 negative answers, or 6 indeterminate answers.
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="pick" class="card">
-            <div class="card-header" id="headingPick">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePick" aria-expanded="true" aria-controls="collapsePick">
-                        Pick a Number
-                    </button>
-                </h5>
-            </div>
-
-            <div id="collapsePick" class="collapse " aria-labelledby="headingPick" data-parent="#deciders">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <form method="GET" action="/pick">
-                                <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/>
-                                <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/>
-                                <button class="decide" name="pick" type="button">Pick</button>
-                            </form>
+            <div id="collapseLikely" class="collapse" data-parent="#deciders">
+                <div id="likely" class="card">
+                    <div class="card-header"><h5 class="card-title">Percent Likely</h5></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <form method="GET" action="/likely">
+                                    <label for="percent">Percent:</label> <input id="percent" name="percent" type="number" min="1" max="99" value="50"/><br />
+                                    <button class="decide" name="guess" type="button">Guess</button>
+                                </form>
+                            </div>
+                            <div class="col answer"><span class="value"> </span></div>
                         </div>
-                        <div class="col-3 answer"><span class="value"> </span></div>
+                        <div class="row">
+                            <div class="col-12">
+                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#likelyHelp">?</button>
+                            <div id="likelyHelp" class="collapse help">
+                                Treats the supplied integer as a percentage and returns <code>true</code>
+                                that percent of the time. Otherwise, return <code>false</code>.
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="select" class="card">
-            <div class="card-header" id="headingSelect">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSelect" aria-expanded="true" aria-controls="collapseSelect">
-                        Select a String
-                    </button>
-                </h5>
-            </div>
-
-            <div id="collapseSelect" class="collapse " aria-labelledby="headingSelect" data-parent="#deciders">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <form method="GET" action="/select">
-                                <label for="strings">Strings, one per line:</label><br />
-                                <textarea cols="30" rows="5" id="strings" name="string"></textarea><br />
-                                <button class="decide" name="select" type="button">Select</button>
-                            </form>
+            <div id="collapsePick" class="collapse" data-parent="#deciders">
+                <div id="pick" class="card">
+                    <div class="card-header"><h5 class="card-title">Pick a Number</h5></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <form method="GET" action="/pick">
+                                    <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/><br />
+                                    <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/>
+                                    <button class="decide" name="pick" type="button">Pick</button>
+                                </form>
+                            </div>
+                            <div class="col answer"><span class="value"> </span></div>
                         </div>
-                        <div class="col-3 answer"><span class="value"> </span></div>
+                        <div class="row">
+                            <div class="col-12">
+                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#pickHelp">?</button>
+                            <div id="pickHelp" class="collapse help">
+                                Selects a number between two supplied integers (inclusive) with equal probability.
+            The two numbers cannot be the same.
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div> <!-- accordian -->
+            <div id="collapseSelect" class="collapse" data-parent="#deciders">
+                <div id="select" class="card">
+                    <div class="card-header"><h5 class="card-title">Select a String</h5></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <form method="GET" action="/select">
+                                    <label for="strings">Strings, one per line:</label><br />
+                                    <textarea cols="30" rows="5" id="strings" name="string"></textarea><br />
+                                    <button class="decide" name="select" type="button">Select</button>
+                                </form>
+                            </div>
+                            <div class="col answer"><span class="value"> </span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#selectHelp">?</button>
+                            <div id="selectHelp" class="collapse help">
+                                Selects one of the supplied strings with equal probability. There must be
+            at least two strings to choose between. The strings should be entered one per line.
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- deciders -->
+    </div> <!-- row -->
+</div> <!-- container -->
+<div class="row">
+    <div class="offset-1 col-9">
+        <footer id="colophon" role="contentinfo">
+            <div class="site-info">
+                <div class="footercopy">Copyright 2018, G. Wade Johnson. Licensed under Creative Commons Attribution License 2.5.</div>
+                <!--    <div class="footercredit"><a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a></div> -->
+                <div class="clear"></div>
+            </div><!-- .site-info -->
+        </footer><!-- #colophon -->
+    </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -210,8 +297,8 @@ $( document ).ready(function() {
     $("#oracle button.decide").click(function(event) {
         make_decision("#oracle");
     });
-    $("#percent button.decide").click(function(event) {
-        make_decision("#percent");
+    $("#likely button.decide").click(function(event) {
+        make_decision("#likely");
     });
     $("#pick button.decide").click(function(event) {
         make_decision("#pick");
