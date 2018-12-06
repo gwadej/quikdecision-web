@@ -37,9 +37,19 @@
         font-size: 75%;
         color: #888;
     }
-    .header h3 {
-        font-size: 80%;
-        margin: 0.5rem 10rem;
+    #oracle .answer .label {
+        display: none;
+    }
+    #oracle .answer .value {
+        font-size: 125%;
+    }
+    .button-text {
+        display: none;
+        font-size: 75%;
+    }
+    .button-img {
+        width: 48px;
+        height: 48px;
     }
 </style>
 </head>
@@ -47,29 +57,34 @@
 <div class="container-fluid">
     <div class="header text-primary mb-4">
         <h2>QuikDecision</h2>
-        <h3>If you can't make a decision, use QuikDecision.</h3>
     </div>
     <div id="error" class="alert alert-danger">Error: <span class="msg"> </span></div>
     <div class="row no-gutters">
-        <div class="offset-1 col-1">
+        <div class="offset-1 col-2">
             <ul class="tab-ctrl float-right">
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCoin" aria-expanded="true" aria-controls="collapseCoin">
-                Flip a Coin
+                <img src="/static/noun_Coins_1485554.svg" class="button-img" alt="Flip a Coin"/>
+                <span class="button-text">Flip a Coin</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseDice" aria-expanded="true" aria-controls="collapseDice">
-                Roll the Dice
+                <img src="/static/noun_Dice_1765632.svg" class="button-img" alt="Roll the Dice"/>
+                <span class="button-text">Roll the Dice</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseOracle" aria-expanded="true" aria-controls="collapseOracle">
-                Ask the Oracle
+                <img src="/static/noun_oracle_139375.svg" class="button-img" alt="Ask the Oracle"/>
+                <span class="button-text">Ask the Oracle</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseLikely" aria-expanded="true" aria-controls="collapseLikely">
-                Percent Likely
+                <img src="/static/noun_Percent_625396.svg" class="button-img" alt="Percent Likely"/>
+                <span class="button-text">Percent Likely</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapsePick" aria-expanded="true" aria-controls="collapsePick">
-                Pick a Number
+                <img src="/static/noun_Number_1576875.svg" class="button-img" alt="Pick a Number"/>
+                <span class="button-text">Pick a Number</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseSelect" aria-expanded="true" aria-controls="collapseSelect">
-                Select a String
+                <img src="/static/noun_text_957716.svg" class="button-img" alt="Select a String"/>
+                <span class="button-text">Select a String</span>
             </button></li>
             </ul>
         </div>
@@ -79,12 +94,12 @@
                     <div class="card-header"><h5 class="card-title">Flip a Coin</h5></div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm col-lg-3">
                                 <form method="GET" action="/flip">
                                     <button class="decide" name="flip" type="button">Flip the Coin</button>
                                 </form>
                             </div>
-                            <div class="col answer"> <span class="value"> </span> </div>
+                            <div class="col-sm col-lg-9 answer"> <span class="value"> </span> </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -101,13 +116,13 @@
                 <div id="dice" class="card">
                     <div class="card-header"><h5 class="card-title">Roll the Dice</h5></div> <div class="card-body">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm col-lg-3">
                             <form method="GET" action="/roll">
                                 <label for="expr">Dice Expression:</label> <input id="expr" name="expr" type="text" width="100" value="1d6"/>
                                 <button class="decide" name="roll" type="button">Roll</button>
                             </form>
                             </div>
-                            <div class="col answer">Value: <span class="value"> </span><br />
+                            <div class="col-sm col-lg-9 answer">Value: <span class="value"> </span><br />
                                 Roll: <span class="extra"> </span></div>
                         </div>
                         <div class="row">
@@ -144,14 +159,14 @@
                     <div class="card-header"><h5 class="card-title">Ask the Oracle</h5></div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm-6 col-lg-3">
                                 <form method="GET" action="/oracle">
                                     <button class="decide" name="ask" type="button">Ask the Oracle</button>
                                 </form>
                             </div>
-                            <div class="col answer">
+                            <div class="col-sm col-lg-9 answer">
                                 <span class="label"> </span>
-                                <q class="value"> </q>
+                                <span class="value"> </span>
                             </div>
                         </div>
                         <div class="row">
@@ -171,13 +186,13 @@
                     <div class="card-header"><h5 class="card-title">Percent Likely</h5></div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm col-lg-3">
                                 <form method="GET" action="/likely">
                                     <label for="percent">Percent:</label> <input id="percent" name="percent" type="number" min="1" max="99" value="50"/><br />
                                     <button class="decide" name="guess" type="button">Guess</button>
                                 </form>
                             </div>
-                            <div class="col answer"><span class="value"> </span></div>
+                            <div class="col-sm col-lg-9 answer"><span class="value"> </span></div>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -196,14 +211,14 @@
                     <div class="card-header"><h5 class="card-title">Pick a Number</h5></div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm col-md-3">
                                 <form method="GET" action="/pick">
                                     <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/><br />
-                                    <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/>
+                                    <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/><br />
                                     <button class="decide" name="pick" type="button">Pick</button>
                                 </form>
                             </div>
-                            <div class="col answer"><span class="value"> </span></div>
+                            <div class="col-sm col-md-9 answer"><span class="value"> </span></div>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -222,14 +237,14 @@
                     <div class="card-header"><h5 class="card-title">Select a String</h5></div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm col-lg-3">
                                 <form method="GET" action="/select">
                                     <label for="strings">Strings, one per line:</label><br />
                                     <textarea cols="30" rows="5" id="strings" name="string"></textarea><br />
                                     <button class="decide" name="select" type="button">Select</button>
                                 </form>
                             </div>
-                            <div class="col answer"><span class="value"> </span></div>
+                            <div class="col-sm col-lg-9 answer"><span class="value"> </span></div>
                         </div>
                         <div class="row">
                             <div class="col-12">

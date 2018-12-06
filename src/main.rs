@@ -7,8 +7,10 @@ use futures::future;
 use hyper::rt::Future;
 use hyper::service::service_fn;
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
+use std::path::{Path,PathBuf};
 use std::fs::File;
 use std::io::prelude::*;
+use std::ffi::OsStr;
 
 use quikdecision::{coin,dice,oracle,percent,pick,select};
 //use quikdecision::{Command,Decision,Decider};
@@ -31,7 +33,7 @@ fn echo(req: Request<Body>) -> BoxFut {
     {
         // Serve some instructions at /
         (&Method::GET, "/") => {
-            match load_file("static/quikdecision.html")
+            match load_file("templates/quikdecision.html")
             {
                 Ok(content) => {
                     Response::builder()
@@ -90,6 +92,31 @@ fn echo(req: Request<Body>) -> BoxFut {
             }
         }
 
+        (&Method::GET, path) if path.starts_with("/static/") => {
+            let uri_path = PathBuf::from(req.uri().path());
+            let path = uri_path.strip_prefix("/static/");
+            let path = match path
+            {
+                Ok(path) => path,
+                Err(_) => return Box::new(future::ok(Response::builder()
+                            .status(StatusCode::NOT_FOUND)
+                            .body(Body::from("Unknown decision command"))
+                            .unwrap())),
+            };
+            let file = Path::new("static/").join(path);
+            let content_type = find_type(file.extension());
+            match load_file(file.to_str().unwrap())
+            {
+                Ok(content) => {
+                    Response::builder()
+                        .header("Content-Type", content_type)
+                        .body(Body::from(content))
+                        .unwrap()
+                },
+                Err(msg) => report_error(&msg),
+            }
+        }
+
         // The 404 Not Found route...
         _ => {
             Response::builder()
@@ -100,6 +127,27 @@ fn echo(req: Request<Body>) -> BoxFut {
     };
 
     Box::new(future::ok(response))
+}
+
+fn find_type(ext: Option<&OsStr>) -> &'static str
+{
+    let ext = match ext
+    {
+        None => return "text/plain",
+        Some(e) => e.to_str(),
+    };
+    match ext
+    {
+        Some("css") => "text/css",
+        Some("html") => "text/html",
+        Some("ico") => "image/x-icon",
+        Some("jpg") | Some("jpeg") => "image/jpeg",
+        Some("js") => "application/javascript",
+        Some("json") => "application/json",
+        Some("png") => "image/png",
+        Some("svg") => "image/svg+xml",
+        None | Some("txt") | Some(_) => "text/plain",
+    }
 }
 
 fn load_file(name: &str) -> Result<String,String>
@@ -119,7 +167,8 @@ fn load_file(name: &str) -> Result<String,String>
 }
 
 fn main() {
-    let addr = ([127, 0, 0, 1], 3000).into();
+    let addr = ([0, 0, 0, 0], 3000).into();
+    //let addr = ([127, 0, 0, 1], 3000).into();
 
     let server = Server::bind(&addr)
         .serve(|| service_fn(echo))
