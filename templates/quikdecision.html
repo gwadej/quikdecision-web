@@ -75,8 +75,8 @@
                 <span class="button-text">Ask the Oracle</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseLikely" aria-expanded="true" aria-controls="collapseLikely">
-                <img src="/static/noun_Percent_625396.svg" class="button-img" alt="Percent Likely"/>
-                <span class="button-text">Percent Likely</span>
+                <img src="/static/noun_Percent_625396.svg" class="button-img" alt="Percent True"/>
+                <span class="button-text">Percent True</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapsePick" aria-expanded="true" aria-controls="collapsePick">
                 <img src="/static/noun_Number_1576875.svg" class="button-img" alt="Pick a Number"/>
@@ -91,7 +91,10 @@
         <div class="col-8" id="deciders">
             <div id="collapseCoin" class="collapse show" data-parent="#deciders">
                 <div id="coin" class="card">
-                    <div class="card-header"><h5 class="card-title">Flip a Coin</h5></div>
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#coinHelp">?</button>
+                        <h5 class="card-title">Flip a Coin</h5>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
@@ -103,7 +106,6 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#coinHelp">?</button>
                             <div id="coinHelp" class="collapse help">
                                 Returns one of the two strings <em>Heads</em> or <em>Tails</em>. There is an equal probability of returning either one.
                             </div>
@@ -114,7 +116,11 @@
             </div>
             <div id="collapseDice" class="collapse" data-parent="#deciders">
                 <div id="dice" class="card">
-                    <div class="card-header"><h5 class="card-title">Roll the Dice</h5></div> <div class="card-body">
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#diceHelp">?</button>
+                        <h5 class="card-title">Roll the Dice</h5>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
                             <form method="GET" action="/roll">
@@ -127,7 +133,6 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#diceHelp">?</button>
                             <div id="diceHelp" class="collapse help">
                                 <p>Roll the described combination of dice, returning a number and description of the
                                 roll. The <em>dice expr</em> is a combination of terms of one of three forms joined by <code>+</code>:</p>
@@ -156,7 +161,10 @@
             </div>
             <div id="collapseOracle" class="collapse" data-parent="#deciders">
                 <div id="oracle" class="card">
-                    <div class="card-header"><h5 class="card-title">Ask the Oracle</h5></div>
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#oracleHelp">?</button>
+                        <h5 class="card-title">Ask the Oracle</h5>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
@@ -171,7 +179,6 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#oracleHelp">?</button>
                             <div id="oracleHelp" class="collapse help">
                                 This command returns a string randomly selected from the Oracle's set of
             9 positive answers, 9 negative answers, or 6 indeterminate answers.
@@ -183,7 +190,10 @@
             </div>
             <div id="collapseLikely" class="collapse" data-parent="#deciders">
                 <div id="likely" class="card">
-                    <div class="card-header"><h5 class="card-title">Percent Likely</h5></div>
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#likelyHelp">?</button>
+                        <h5 class="card-title">Percent True</h5>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
@@ -196,7 +206,6 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#likelyHelp">?</button>
                             <div id="likelyHelp" class="collapse help">
                                 Treats the supplied integer as a percentage and returns <code>true</code>
                                 that percent of the time. Otherwise, return <code>false</code>.
@@ -208,7 +217,10 @@
             </div>
             <div id="collapsePick" class="collapse" data-parent="#deciders">
                 <div id="pick" class="card">
-                    <div class="card-header"><h5 class="card-title">Pick a Number</h5></div>
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#pickHelp">?</button>
+                        <h5 class="card-title">Pick a Number</h5>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-md-3">
@@ -222,7 +234,6 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#pickHelp">?</button>
                             <div id="pickHelp" class="collapse help">
                                 Selects a number between two supplied integers (inclusive) with equal probability.
             The two numbers cannot be the same.
@@ -234,7 +245,10 @@
             </div>
             <div id="collapseSelect" class="collapse" data-parent="#deciders">
                 <div id="select" class="card">
-                    <div class="card-header"><h5 class="card-title">Select a String</h5></div>
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#selectHelp">?</button>
+                        <h5 class="card-title">Select a String</h5>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
@@ -248,7 +262,6 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                            <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#selectHelp">?</button>
                             <div id="selectHelp" class="collapse help">
                                 Selects one of the supplied strings with equal probability. There must be
             at least two strings to choose between. The strings should be entered one per line.
