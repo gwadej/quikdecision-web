@@ -1,6 +1,6 @@
 [package]
-name = "quikdecision-hyper"
-version = "0.1.0"
+name = "quikdecision-web"
+version = "0.7.0"
 authors = ["G. Wade Johnson <gwadej@anomaly.org>"]
 description = "Make random decisions using one of a few different methods."
 readme = "README.md"
