@@ -96,7 +96,7 @@
                         <div class="row">
                             <div class="col col-lg-3">
                                 <form method="GET" action="/flip">
-                                    <button class="decide" name="flip" type="button">Decide</button>
+                                    <button class="decide btn btn-outline-primary btn-sm" name="flip" type="button">Flip</button>
                                 </form>
                             </div>
                             <div class="col col-lg-9 answer"> <span class="value"> </span> </div>
@@ -118,8 +118,8 @@
                         <div class="row">
                             <div class="col col-lg-3">
                             <form method="GET" action="/roll">
-                                <label for="expr">Dice Expression:</label> <input id="expr" name="expr" type="text" width="100" value="1d6"/>
-                                <button class="decide" name="roll" type="button">Roll</button>
+                                <label for="expr">Dice Expression:</label> <input id="expr" name="expr" type="text" width="100" value="1d6"/><br />
+                                <button class="decide btn btn-outline-primary btn-sm" name="roll" type="button">Roll</button>
                             </form>
                             </div>
                             <div class="col col-lg-9 answer">Value: <span class="value"> </span><br />
@@ -161,7 +161,7 @@
                         <div class="row">
                             <div class="col col-lg-3">
                                 <form method="GET" action="/oracle">
-                                    <button class="decide" name="ask" type="button">Ask</button>
+                                    <button class="decide btn btn-outline-primary btn-sm" name="ask" type="button">Ask</button>
                                 </form>
                             </div>
                             <div class="col col-lg-9 answer">
@@ -189,7 +189,7 @@
                             <div class="col col-lg-3">
                                 <form method="GET" action="/likely">
                                     <label for="percent">Percent:</label> <input id="percent" name="percent" type="number" min="1" max="99" value="50"/><br />
-                                    <button class="decide" name="guess" type="button">Guess</button>
+                                    <button class="decide btn btn-outline-primary btn-sm" name="guess" type="button">Guess</button>
                                 </form>
                             </div>
                             <div class="col col-lg-9 answer"><span class="value"> </span></div>
@@ -215,7 +215,7 @@
                                 <form method="GET" action="/pick">
                                     <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/><br />
                                     <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/><br />
-                                    <button class="decide" name="pick" type="button">Pick</button>
+                                    <button class="decide btn btn-outline-primary btn-sm" name="pick" type="button">Pick</button>
                                 </form>
                             </div>
                             <div class="col col-md-9 answer"><span class="value"> </span></div>
@@ -241,7 +241,7 @@
                                 <form method="GET" action="/select">
                                     <label for="strings">Strings, one per line:</label><br />
                                     <textarea cols="30" rows="5" id="strings" name="string"></textarea><br />
-                                    <button class="decide" name="select" type="button">Select</button>
+                                    <button class="decide btn btn-outline-primary btn-sm" name="select" type="button">Select</button>
                                 </form>
                             </div>
                             <div class="col col-lg-9 answer"><span class="value"> </span></div>
