@@ -408,8 +408,7 @@ $( document ).ready(function() {
         make_decision("#pick");
     });
     $("#select button.decide").click(function(event) {
-        let val = $("#strings").val().replace(/\n/g, ",");
-        make_decision("#select", { strings: val });
+        make_decision("#select");
     });
 });
 </script>

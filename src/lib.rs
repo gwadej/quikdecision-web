@@ -96,12 +96,18 @@ pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), &str>
     }
 }
 
+fn split_strings(strings: &str) -> Vec<String>
+{
+    let sep = if strings.contains("\n") { "\n" } else { "," };
+    strings.split(sep).map(|s| s.to_string()).collect::<Vec<String>>()
+}
+
 pub fn select_params(opt_query: Option<&str>) -> Result<Vec<String>, &str>
 {
     let params = query_params(opt_query);
     match params.get("strings")
     {
-        Some(strings) => Ok(strings.split(",").map(|s| s.to_string()).collect::<Vec<String>>()),
+        Some(strings) => Ok(split_strings(strings)),
         None => Err("Missing required 'strings'."),
     }
 }
