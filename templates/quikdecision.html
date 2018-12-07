@@ -124,7 +124,9 @@
                         <div class="row">
                             <div class="col col-lg-3">
                             <form method="GET" action="/roll">
-                                <label for="expr">Dice Expression:</label> <input id="expr" name="expr" type="text" width="100" value="1d6"/><br />
+                                <label for="expr">Dice Expression:</label>
+                                <input id="expr" name="expr" type="text" width="100"
+                                   value="" placeholder="Like 3d6 or d12 + 2d6"/><br />
                                 <button class="decide btn btn-outline-primary btn-sm" name="roll" type="button">Roll</button>
                             </form>
                             </div>
@@ -253,8 +255,9 @@
                         <div class="row">
                             <div class="col col-lg-3">
                                 <form method="GET" action="/select">
-                                    <label for="strings">Strings, one per line:</label><br />
-                                    <textarea cols="30" rows="5" id="strings" name="string"></textarea><br />
+                                    <label for="strings">Choose from:</label><br />
+                                    <textarea cols="30" rows="5" id="strings" name="string"
+                                        placeholder="One string per line"></textarea><br />
                                     <button class="decide btn btn-outline-primary btn-sm" name="select" type="button">Select</button>
                                 </form>
                             </div>
