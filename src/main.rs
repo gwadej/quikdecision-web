@@ -11,6 +11,7 @@ use std::path::{Path,PathBuf};
 use std::fs::File;
 use std::io::prelude::*;
 use std::ffi::OsStr;
+use std::env;
 
 use quikdecision::{coin,dice,oracle,percent,pick,select};
 //use quikdecision::{Command,Decision,Decider};
@@ -27,7 +28,7 @@ type BoxFut = Box<Future<Item = Response<Body>, Error = hyper::Error> + Send>;
 
 /// This is our service handler. It receives a Request, routes on its
 /// path, and returns a Future of a Response.
-fn echo(req: Request<Body>) -> BoxFut {
+fn quikdecision(req: Request<Body>) -> BoxFut {
     let response =
     match (req.method(), req.uri().path())
     {
@@ -167,11 +168,15 @@ fn load_file(name: &str) -> Result<String,String>
 }
 
 fn main() {
-    let addr = ([0, 0, 0, 0], 3000).into();
+    let port = env::var("QDPORT")
+                .unwrap_or("80".into())
+                .parse::<u16>()
+                .expect("Expected an integer port number.");
+    let addr = ([0, 0, 0, 0], port).into();
     //let addr = ([127, 0, 0, 1], 3000).into();
 
     let server = Server::bind(&addr)
-        .serve(|| service_fn(echo))
+        .serve(|| service_fn(quikdecision))
         .map_err(|e| eprintln!("server error: {}", e));
 
     println!("Listening on http://{}", addr);

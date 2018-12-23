@@ -84,7 +84,7 @@
                 <span class="button-text">Roll the Dice</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseOracle" aria-expanded="false" aria-controls="collapseOracle">
-                <img src="/static/noun_oracle_139375.svg" class="button-img" alt="Ask the Oracle"/>
+                <img src="/static/noun_Fortune-Telling_1728520.svg" class="button-img" alt="Ask the Oracle"/>
                 <span class="button-text">Ask the Oracle</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseLikely" aria-expanded="false" aria-controls="collapseLikely">
@@ -176,7 +176,8 @@
                         <div class="row">
                             <div class="col col-lg-3">
                                 <form method="GET" action="/likely">
-                                    <label for="percent">Percent:</label> <input id="percent" name="percent" type="number" min="1" max="99" value="50"/><br />
+                                    <label for="percent">True <input id="percent" name="percent" type="number" min="1" max="99" value="50"/>
+                                        percent of the time</label><br />
                                     <button class="decide btn btn-outline-primary btn-sm" name="guess" type="button">Guess</button>
                                 </form>
                             </div>
@@ -262,7 +263,7 @@
                 <li>{n}x{s}: roll n s-sided exploding dice (2x8)</li>
                 <li>{n}: an increment.</li>
             </ul>
-            <p>The number of sides supported are 4, 6, 8, 10, 12, 20, or 100. Exploding dice
+            <p>The number of sides supported are 3, 4, 6, 8, 10, 12, 20, or 100. Exploding dice
             work much like normal, except when a die rolls the maximum value for the die,
             then it is re-rolled to generate a value to add to the original roll. This may
             happen more than once.</p>
