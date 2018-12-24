@@ -12,9 +12,9 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::ffi::OsStr;
 use std::env;
+use std::net::IpAddr;
 
 use quikdecision::{coin,dice,oracle,percent,pick,select};
-//use quikdecision::{Command,Decision,Decider};
 
 use qdweb::*;
 
@@ -32,16 +32,14 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
     let response =
     match (req.method(), req.uri().path())
     {
-        // Serve some instructions at /
+        // Main page for the app
         (&Method::GET, "/") => {
             match load_file("templates/quikdecision.html")
             {
-                Ok(content) => {
-                    Response::builder()
+                Ok(content) => Response::builder()
                         .header("Content-Type", "text/html")
                         .body(Body::from(content))
-                        .unwrap()
-                },
+                        .unwrap(),
                 Err(msg) => report_error(&msg),
             }
         }
@@ -67,7 +65,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
         }
 
         // Percent likely
-        (&Method::GET, "/likely") => {
+        (&Method::GET, "/likelihood") => {
             match percent_params(req.uri().query())
             {
                 Ok(percent) => process_command(percent::command(percent)),
@@ -93,29 +91,9 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             }
         }
 
+        // static files served
         (&Method::GET, path) if path.starts_with("/static/") => {
-            let uri_path = PathBuf::from(req.uri().path());
-            let path = uri_path.strip_prefix("/static/");
-            let path = match path
-            {
-                Ok(path) => path,
-                Err(_) => return Box::new(future::ok(Response::builder()
-                            .status(StatusCode::NOT_FOUND)
-                            .body(Body::from("Unknown decision command"))
-                            .unwrap())),
-            };
-            let file = Path::new("static/").join(path);
-            let content_type = find_type(file.extension());
-            match load_file(file.to_str().unwrap())
-            {
-                Ok(content) => {
-                    Response::builder()
-                        .header("Content-Type", content_type)
-                        .body(Body::from(content))
-                        .unwrap()
-                },
-                Err(msg) => report_error(&msg),
-            }
+            static_file(PathBuf::from(req.uri().path()))
         }
 
         // The 404 Not Found route...
@@ -130,14 +108,36 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
     Box::new(future::ok(response))
 }
 
+/// Create response for a static file specified in the URL, if it exists
+/// in the ./static/ directory.
+fn static_file(uri_path: PathBuf) -> Response<Body>
+{
+    let mut builder = Response::builder();
+    match uri_path.strip_prefix("/static/")
+    {
+        Ok(path) => {
+            let file = Path::new("static/").join(path);
+            let content_type = find_type(file.extension());
+            match load_file(file.to_str().unwrap())
+            {
+                Ok(content) => builder
+                        .header("Content-Type", content_type)
+                        .body(Body::from(content)),
+                Err(msg) => builder
+                        .status(StatusCode::NOT_FOUND)
+                        .body(Body::from(msg)),
+            }
+        },
+        Err(_) => builder
+            .status(StatusCode::NOT_FOUND)
+            .body(Body::from("Unknown decision command")),
+    }.unwrap()
+}
+
+/// Return the correct mime-type depending on the file extension.
 fn find_type(ext: Option<&OsStr>) -> &'static str
 {
-    let ext = match ext
-    {
-        None => return "text/plain",
-        Some(e) => e.to_str(),
-    };
-    match ext
+    ext.map_or("text/plain", |e| match e.to_str()
     {
         Some("css") => "text/css",
         Some("html") => "text/html",
@@ -148,32 +148,38 @@ fn find_type(ext: Option<&OsStr>) -> &'static str
         Some("png") => "image/png",
         Some("svg") => "image/svg+xml",
         None | Some("txt") | Some(_) => "text/plain",
-    }
+    })
 }
 
 fn load_file(name: &str) -> Result<String,String>
 {
-    let mut file = match File::open(name)
+    match File::open(name)
     {
-        Ok(file) => file,
-        Err(_) => return Err(format!("Cannot open file: '{}'", name)),
-    };
-    let mut contents = String::new();
-    match file.read_to_string(&mut contents)
-    {
-        Ok(_) => Ok(contents),
-        Err(_) => Err(format!("Failure reading file: '{}'", name)),
-
+        Ok(mut file) => {
+            let mut contents = String::new();
+            match file.read_to_string(&mut contents)
+            {
+                Ok(_) => Ok(contents),
+                Err(_) => Err(format!("Failure reading file: '{}'", name)),
+            }
+        },
+        Err(_) => Err(format!("Cannot open file: '{}'", name)),
     }
 }
 
 fn main() {
-    let port = env::var("QDPORT")
-                .unwrap_or("80".into())
-                .parse::<u16>()
-                .expect("Expected an integer port number.");
-    let addr = ([0, 0, 0, 0], port).into();
-    //let addr = ([127, 0, 0, 1], 3000).into();
+    let port: u16
+        = env::var("QDPORT")
+            .unwrap_or("80".into())
+            .parse()
+            .expect("Expected an integer port number.");
+    let ipaddr: IpAddr
+        = env::var("QDADDR")
+            .unwrap_or("0.0.0.0".into())
+            .parse()
+            .expect("Expected a valid IP address.");
+
+    let addr = (ipaddr, port).into();
 
     let server = Server::bind(&addr)
         .serve(|| service_fn(quikdecision))
