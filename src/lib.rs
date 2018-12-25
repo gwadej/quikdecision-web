@@ -65,14 +65,12 @@ pub fn report_error(msg: &str) -> Response<Body>
 
 pub fn percent_params(opt_query: Option<&str>) -> Result<u32, &str>
 {
-    match query_params(opt_query).get("percent")
-    {
-        Some(percent) => {
+    query_params(opt_query)
+        .get("percent")
+        .ok_or("Missing required 'percent'.")
+        .and_then(|percent|
             percent.parse::<u32>()
-                   .map_err(|_| "'percent' value must be an integer")
-        },
-        None => Err("Missing required 'percent'."),
-    }
+                   .map_err(|_| "'percent' value must be an integer"))
 }
 
 pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), &str>
