@@ -102,10 +102,7 @@ fn split_strings(strings: &str) -> Vec<String>
 
 pub fn select_params(opt_query: Option<&str>) -> Result<Vec<String>, &str>
 {
-    let params = query_params(opt_query);
-    match params.get("strings")
-    {
-        Some(strings) => Ok(split_strings(strings)),
-        None => Err("Missing required 'strings'."),
-    }
+    query_params(opt_query).get("strings")
+        .map(|s| split_strings(s))
+        .ok_or("Missing required 'strings'.")
 }
