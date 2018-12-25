@@ -81,11 +81,11 @@ pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), &str>
     match (params.get("low"), params.get("high"))
     {
         (Some(low), Some(high)) => {
-            match (low.parse::<i32>(), high.parse::<i32>())
+            match (low.parse::<i32>().map_err(|_| "'low' value must be an integer"),
+                   high.parse::<i32>().map_err(|_| "'high' value must be an integer"))
             {
                 (Ok(l), Ok(h)) => Ok((l, h)),
-                (Err(_), _) => Err("'low' value must be an integer"),
-                (_, Err(_)) => Err("'high' value must be an integer"),
+                (Err(e), _) | (_, Err(e))=> Err(e),
             }
         },
         (None, None) => Err("Missing required 'low' and 'high'."),
