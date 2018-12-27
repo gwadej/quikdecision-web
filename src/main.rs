@@ -153,18 +153,14 @@ fn find_type(ext: Option<&OsStr>) -> &'static str
 
 fn load_file(name: &str) -> Result<String,String>
 {
-    match File::open(name)
-    {
-        Ok(mut file) => {
+    File::open(name)
+        .or_else(|_| Err(format!("Cannot open file: '{}'", name)))
+        .and_then(|mut file| {
             let mut contents = String::new();
-            match file.read_to_string(&mut contents)
-            {
-                Ok(_) => Ok(contents),
-                Err(_) => Err(format!("Failure reading file: '{}'", name)),
-            }
-        },
-        Err(_) => Err(format!("Cannot open file: '{}'", name)),
-    }
+            file.read_to_string(&mut contents)
+                .or_else(|_| Err(format!("Failure reading file: '{}'", name)))
+                .and_then(|_| Ok(contents))
+        })
 }
 
 fn main() {
