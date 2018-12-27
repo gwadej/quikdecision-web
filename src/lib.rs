@@ -37,7 +37,6 @@ fn url_decode(input: &str) -> String
     percent_decode(&(input.bytes().collect::<Vec<u8>>()))
         .decode_utf8()
         .unwrap()
-        .to_owned()
         .to_string()
 }
 
@@ -63,32 +62,28 @@ pub fn report_error(msg: &str) -> Response<Body>
         .unwrap()
 }
 
-pub fn percent_params(opt_query: Option<&str>) -> Result<u32, &str>
+pub fn percent_params(opt_query: Option<&str>) -> Result<u32, String>
 {
-    query_params(opt_query)
-        .get("percent")
-        .ok_or("Missing required 'percent'.")
-        .and_then(|percent|
-            percent.parse::<u32>()
-                   .map_err(|_| "'percent' value must be an integer"))
+    extract_int::<u32>(&query_params(opt_query), "percent")
 }
 
-pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), &str>
+fn extract_int<T>(params: &HashMap<&str,String>, key: &str) -> Result<T, String>
+    where T: std::str::FromStr
+{
+    params.get(key)
+        .ok_or(format!("Missing required '{}'.", key))
+        .and_then(|l| l.parse::<T>()
+                  .map_err(|_| format!("'{}' value must be an integer", key)))
+}
+
+pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), String>
 {
     let params = query_params(opt_query);
-    match (params.get("low"), params.get("high"))
+    match (extract_int::<i32>(&params, "low"),
+            extract_int::<i32>(&params, "high"))
     {
-        (Some(low), Some(high)) => {
-            match (low.parse::<i32>().map_err(|_| "'low' value must be an integer"),
-                   high.parse::<i32>().map_err(|_| "'high' value must be an integer"))
-            {
-                (Ok(l), Ok(h)) => Ok((l, h)),
-                (Err(e), _) | (_, Err(e))=> Err(e),
-            }
-        },
-        (None, None) => Err("Missing required 'low' and 'high'."),
-        (None, _) => Err("Missing required 'low'."),
-        (_, None) => Err("Missing required 'high'."),
+        (Ok(l), Ok(h)) => Ok((l, h)),
+        (Err(e), _) | (_, Err(e)) => Err(e),
     }
 }
 

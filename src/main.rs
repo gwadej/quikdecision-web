@@ -69,7 +69,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match percent_params(req.uri().query())
             {
                 Ok(percent) => process_command(percent::command(percent)),
-                Err(msg) => report_error(msg),
+                Err(msg) => report_error(&msg[..]),
             }
         }
 
@@ -78,7 +78,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match pick_params(req.uri().query())
             {
                 Ok((low, high)) => process_command(pick::command(low, high)),
-                Err(msg) => report_error(msg),
+                Err(msg) => report_error(&msg[..]),
             }
         }
 
