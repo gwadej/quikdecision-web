@@ -360,32 +360,27 @@ function make_decision(id, data) {
         type: "GET",
         dataType: "json"
     })
-    .done(function(json) {
+    .fail(function(xhr, status) {
+        let json = xhr.responseJSON;
         if(json.error)
         {
-            $(id + "Error").show();
-            $(id + "Error .msg").text(json.error);
+            status = json.error;
         }
-        else
-        {
-            $(id + "Error").hide();
-            $(id + " .answer").fadeOut(400);
-            $(id + " .answer").fadeIn({
-                duration: 400,
-                start: function() {
-                    for(fld in json)
-                    {
-                        $(id + " ." + fld).text( json[fld] );
-                    }
-                },
-            });
-        }
+        $(id + "Error").show();
+        $(id + "Error .msg").text(status);
     })
-    .fail(function(xhr, status, errorThrown) {
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        $("#error .msg").text("JSON request failure");
-        $("#error").show();
+    .done(function(json) {
+        $(id + "Error").hide();
+        $(id + " .answer").fadeOut(400);
+        $(id + " .answer").fadeIn({
+            duration: 400,
+            start: function() {
+                for(fld in json)
+                {
+                    $(id + " ." + fld).text( json[fld] );
+                }
+            },
+        });
     })
 }
 $(document).on("keypress", ":input:not(textarea)", function(event) {

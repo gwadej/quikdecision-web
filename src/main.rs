@@ -44,6 +44,18 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             }
         }
 
+        // OpenAPI document
+        (&Method::GET, "/openapi.yaml") => {
+            match load_file("static/openapi.yaml")
+            {
+                Ok(content) => Response::builder()
+                        .header("Content-Type", "application/yaml")
+                        .body(Body::from(content))
+                        .unwrap(),
+                Err(msg) => report_error(&msg),
+            }
+         }
+
         // Flip a coin
         (&Method::GET, "/flip") => {
             process_command(coin::command())
@@ -145,6 +157,7 @@ fn find_type(ext: Option<&OsStr>) -> &'static str
         Some("jpg") | Some("jpeg") => "image/jpeg",
         Some("js") => "application/javascript",
         Some("json") => "application/json",
+        Some("yaml") => "application/yaml",
         Some("png") => "image/png",
         Some("svg") => "image/svg+xml",
         None | Some("txt") | Some(_) => "text/plain",

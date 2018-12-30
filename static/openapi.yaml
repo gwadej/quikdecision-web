@@ -1,0 +1,175 @@
+openapi: 3.0.1
+info:
+  title: QuikDecision
+  description: Tool for making random decisions.
+  version: "0.8.0"
+servers:
+  - url: 'http://qd.gwadej.org'
+paths:
+  /roll:
+    get:
+      description: Simulate rolling dice.
+      parameters:
+        - name: expr
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The dice expr is a combination of terms of one of three forms joined by +:
+- {n}d{s}: roll n s-sided dice (3d6)
+- {n}x{s}: roll n s-sided exploding dice (2x8)
+- {n}: an increment.'
+          example: '3d6 + 2d4 + 1'
+      responses:
+        '200':
+          description: Successful dice roll.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: integer
+                    minimum: 1
+                  extra:
+                    type: string
+                    description: 'Normal dice are represented by the expression, followed by the results of the individual die rolls in parens: 3d6(3+5+1).
+
+Exploding dice are represented by the dice expression followed by an expression in angle brackets. The expression is made of the results of each individual die in parens, with any die that exploded being followed by an !, and the re-roll added as needed: 3x6<(1)+(6!+5)+(2)>.'
+        '400':
+          description: Invalid dice expression.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /pick:
+    get:
+      description: Pick a number between low and high inclusive.
+      parameters:
+        - name: low
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: high
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Successfully chosen number
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: integer
+        '400':
+          description: Missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /flip:
+    get:
+      description: Simulate flipping a fair coin.
+      responses:
+        '200':
+          description: Result of coin flip.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    pattern: 'Heads|Tails'
+  /likelihood:
+    get:
+      description: Return true the specified percent of the time.
+      parameters:
+        - name: percent
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 99
+          example: 35
+      responses:
+        '200':
+          description: Either true or false.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: boolean
+        '400':
+          description: Percent parameter missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /select:
+    get:
+      description: Select one of the supplied strings with equal probability
+      parameters:
+        - name: strings
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Selects one of the supplied strings with equal probability. There must be at least two strings to choose between. The strings should be entered one per line. Strings
+            can also be separated by commas.'
+          example: 'david,mark,connie,kirsten'
+      responses:
+        '200':
+          description: Selected string.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: 'One of the strings supplied.'
+        '400':
+          description: Invalid parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /oracle:
+    get:
+      description: "This command returns a string randomly selected from the Oracle's set of 9 positive answers, 9 negative answers, or 6 indeterminate answers."
+      responses:
+        '200':
+          description: The answer from the Oracle.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: 'The actual answer'
+                  label:
+                    type: string

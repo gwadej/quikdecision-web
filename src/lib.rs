@@ -5,13 +5,14 @@ extern crate serde_json;
 extern crate percent_encoding;
 
 use std::collections::HashMap;
-use hyper::{Body,  Response};
+use hyper::{Body,  Response, StatusCode};
 use percent_encoding::percent_decode;
 
 use quikdecision::{Command, Decision, Decider};
 
 pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
 {
+    let mut builder = Response::builder();
     let body = match cmdres
     {
         Ok(cmd) => {
@@ -24,9 +25,12 @@ pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
                 Decision::Bool(value) => { json!({ "value": value }) },
             }.to_string())
         },
-        Err(msg) => Body::from(json!({ "error": msg }).to_string()),
+        Err(msg) => {
+            builder.status(StatusCode::BAD_REQUEST);
+            Body::from(json!({ "error": msg }).to_string())
+        },
     };
-    Response::builder()
+    builder
         .header("Content-Type", "application/json")
         .body(body)
         .unwrap()
@@ -58,6 +62,7 @@ pub fn report_error(msg: &str) -> Response<Body>
 {
     Response::builder()
         .header("Content-Type", "application/json")
+        .status(StatusCode::BAD_REQUEST)
         .body(Body::from(json!({ "error": msg }).to_string()))
         .unwrap()
 }
