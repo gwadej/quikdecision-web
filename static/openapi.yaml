@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: QuikDecision
   description: Tool for making random decisions.
-  version: "0.8.0"
+  version: "0.9.0"
 servers:
   - url: 'http://qd.gwadej.org'
 paths:
