@@ -224,12 +224,20 @@
                                 <form method="GET" class="mb-2" action="/select">
                                     <textarea cols="30" rows="5" id="strings" name="strings"
                                         placeholder="One string per line"></textarea><br />
+                                    <button class="btn btn-outline-primary btn-sm float-right" id="name_list"
+                                            name="name_list" type="button" data-toggle="modal" data-target="#list_modal">Save</button>
                                     <button class="decide btn btn-outline-primary btn-sm" name="select" type="button">Select</button>
                                 </form>
                                 <button id="rock_paper_scissors" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors</button><br />
                                 <button id="rpsls" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors/Lizard/Spock</button><br />
                                 <button id="cuisine" class="btn btn-outline-secondary btn-sm">Cuisine</button>
                                 <button id="after_dinner" class="btn btn-outline-secondary btn-sm">After Dinner</button>
+                                <div class="mt-2">
+                                  <select id="saved_lists">
+                                    <option></option>
+                                  </select>
+                                  <button id="saved" class="btn btn-outline-secondary btn-sm">Populate</button>
+                                </div>
                             </div>
                             <div class="col col-lg-8 answer"><span class="value"> </span></div>
                         </div>
@@ -242,6 +250,19 @@
         </div> <!-- deciders -->
     </div> <!-- row -->
 <!-- Modals -->
+<div class="modal" id="list_modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form>
+          <input type="text" name="list_name" id="list_name" placeholder="Name for saved list" value="" />
+          <button class="btn btn-outline-primary btn-sm float-right" id="save_list"
+                  name="save_list" type="button">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="coinHelp" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -389,6 +410,50 @@ function make_decision(id, data) {
 function set_text_list(strings) {
     $("#strings").val(strings);
 }
+function get_select_lists_names()
+{
+    let names = localStorage.getItem("qd:select_keys");
+    if(names)
+    {
+        return names.split("\t");
+    }
+    else
+    {
+        return [];
+    }
+}
+function add_select_list(name, value)
+{
+    localStorage.setItem("qd:select:" + name, value);
+    let names = get_select_lists_names();
+    if(!names.includes(name))
+    {
+        names.push(name);
+        localStorage.setItem("qd:select_keys", names.join("\t"));
+    }
+}
+function remove_select_list(name)
+{
+    localStorage.removeItem("qd:select:" + name);
+    let names = get_select_lists_names().filter(n => n != name);
+    if(names.length == 0)
+    {
+        localStorage.removeItem("qd:select_keys");
+    }
+    else
+    {
+        localStorage.setItem("qd:select_keys", names.join("\t"));
+    }
+}
+function fill_saved_list() {
+    $("#saved_lists").find('option').remove();
+    let saved = get_select_lists_names();
+    let options = '<option></option>';
+    for(let i=0; i<saved.length; ++i) {
+        options += '<option>' + saved[i] + '</option>';
+    }
+    $("#saved_lists").append(options);
+}
 $(document).on("keypress", ":input:not(textarea)", function(event) {
     if (event.keyCode == 13) {
         event.preventDefault();
@@ -414,6 +479,25 @@ $( document ).ready(function() {
     });
     $("#select button.decide").click(function(event) {
         make_decision("#select");
+    });
+    $("#save_list").click(function(event) {
+        let name = $("#list_name").val();
+        if(name)
+        {
+            let value = $("#strings").val();
+            if(value)
+            {
+                add_select_list(name, value);
+            }
+            else
+            {
+                remove_select_list(name);
+            }
+            $("#list_name").val("");
+            fill_saved_list();
+        }
+        $('#list_modal').modal('hide')
+        return false;
     });
     $("#rock_paper_scissors").click(function(event) {
         set_text_list("Rock\nPaper\nScissors");
@@ -441,6 +525,18 @@ $( document ).ready(function() {
             "Ice Cream", "Pastries",
             "Pie"
         ].join("\n"));
+    });
+    fill_saved_list();
+    $("#saved").click(function(event) {
+        let name = $("#saved_lists").val();
+        if(name)
+        {
+            set_text_list(localStorage.getItem("qd:select:" + name));
+        }
+        return false;
+    });
+    $('#list_modal').on('shown.bs.modal', function () {
+        $('#list_name').trigger('focus')
     });
 });
 </script>
