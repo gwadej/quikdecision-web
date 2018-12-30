@@ -96,7 +96,7 @@
                 <span class="button-text">Pick a Number</span>
             </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseSelect" aria-expanded="false" aria-controls="collapseSelect">
-                <img src="/static/noun_text_957716.svg" class="button-img" alt="Select a String"/>
+                <img src="/static/noun_List_857912.svg" class="button-img" alt="Select a String"/>
                 <span class="button-text">Select a String</span>
             </button></li>
             </ul>
@@ -216,19 +216,22 @@
                 <div id="select" class="card">
                     <div class="card-header">
                         <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="modal" data-target="#selectHelp">?</button>
-                        <h5 class="card-title">Select a String</h5>
+                        <h5 class="card-title">Which one?</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
-                                <form method="GET" action="/select">
-                                    <label for="strings">Choose from:</label><br />
+                                <form method="GET" class="mb-2" action="/select">
                                     <textarea cols="30" rows="5" id="strings" name="strings"
                                         placeholder="One string per line"></textarea><br />
                                     <button class="decide btn btn-outline-primary btn-sm" name="select" type="button">Select</button>
                                 </form>
+                                <button id="rock_paper_scissors" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors</button><br />
+                                <button id="rpsls" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors/Lizard/Spock</button><br />
+                                <button id="cuisine" class="btn btn-outline-secondary btn-sm">Cuisine</button>
+                                <button id="after_dinner" class="btn btn-outline-secondary btn-sm">After Dinner</button>
                             </div>
-                            <div class="col col-lg-9 answer"><span class="value"> </span></div>
+                            <div class="col col-lg-8 answer"><span class="value"> </span></div>
                         </div>
                         <div id="selectError" class="row errmsg">
                             <div class="col alert alert-danger">Error: <span class="msg"> </span></div>
@@ -383,6 +386,9 @@ function make_decision(id, data) {
         });
     })
 }
+function set_text_list(strings) {
+    $("#strings").val(strings);
+}
 $(document).on("keypress", ":input:not(textarea)", function(event) {
     if (event.keyCode == 13) {
         event.preventDefault();
@@ -408,6 +414,33 @@ $( document ).ready(function() {
     });
     $("#select button.decide").click(function(event) {
         make_decision("#select");
+    });
+    $("#rock_paper_scissors").click(function(event) {
+        set_text_list("Rock\nPaper\nScissors");
+    });
+    $("#rpsls").click(function(event) {
+        set_text_list("Rock\nPaper\nScissors\nLizard\nSpock");
+    });
+    $("#cuisine").click(function(event) {
+        set_text_list([
+            "Burgers", "BBQ",
+            "Italian", "French",
+            "Pizza",   "Tex-Mex",
+            "Cajun",   "Mediterranean",
+            "Seafood", "Greek",
+            "Indian",  "Chinese",
+            "Thai",    "Vietnamese",
+            "Sushi",   "Steak"
+        ].join("\n"));
+    });
+    $("#after_dinner").click(function(event) {
+        set_text_list([
+            "Bubble Tea", "Cheesecake",
+            "Coffee",     "Cookies",
+            "Frozen Yogurt", "Gelato",
+            "Ice Cream", "Pastries",
+            "Pie"
+        ].join("\n"));
     });
 });
 </script>
