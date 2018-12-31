@@ -224,19 +224,19 @@
                                 <form method="GET" class="mb-2" action="/select">
                                     <textarea cols="30" rows="5" id="strings" name="strings"
                                         placeholder="One string per line"></textarea><br />
-                                    <button class="btn btn-outline-primary btn-sm float-right" id="name_list"
+                                    <button class="decide btn btn-outline-primary btn-sm mr-5" name="select" type="button">Select</button>
+                                    <button class="btn btn-outline-primary btn-sm ml-5" id="name_list"
                                             name="name_list" type="button" data-toggle="modal" data-target="#list_modal">Save</button>
-                                    <button class="decide btn btn-outline-primary btn-sm" name="select" type="button">Select</button>
                                 </form>
                                 <button id="rock_paper_scissors" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors</button><br />
                                 <button id="rpsls" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors/Lizard/Spock</button><br />
                                 <button id="cuisine" class="btn btn-outline-secondary btn-sm">Cuisine</button>
                                 <button id="after_dinner" class="btn btn-outline-secondary btn-sm">After Dinner</button>
                                 <div class="mt-2">
-                                  <select id="saved_lists">
+                                  <select class="custom-select" id="saved_lists">
                                     <option></option>
                                   </select>
-                                  <button id="saved" class="btn btn-outline-secondary btn-sm">Populate</button>
+                                  <button id="saved" class="btn btn-outline-primary btn-sm">Load</button>
                                 </div>
                             </div>
                             <div class="col col-lg-8 answer"><span class="value"> </span></div>
@@ -353,8 +353,13 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
-            Selects one of the supplied strings with equal probability. There must be
-            at least two strings to choose between. The strings should be entered one per line.
+          <p>Selects one of the supplied strings with equal probability. There must be
+          at least two strings to choose between. The strings should be entered one per line.</p>
+          <p>The <em>Save</em> button saves the current list under a name you supply. If you
+          save an empty list, it deletes the list that you name.</p>
+          <p>The middle cluster of buttons provide some example lists that you might find useful.</p>
+          <p>The menu at the bottom provides access to any lists you've saved. The <em>Load</em>
+          button populates the string list with the values you saved.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
@@ -412,38 +417,15 @@ function set_text_list(strings) {
 }
 function get_select_lists_names()
 {
-    let names = localStorage.getItem("qd:select_keys");
-    if(names)
-    {
-        return names.split("\t");
-    }
-    else
-    {
-        return [];
-    }
+    return Object.keys(localStorage).filter(k => k.startsWith("qd:select:")).map(k => k.substring(10));
 }
 function add_select_list(name, value)
 {
     localStorage.setItem("qd:select:" + name, value);
-    let names = get_select_lists_names();
-    if(!names.includes(name))
-    {
-        names.push(name);
-        localStorage.setItem("qd:select_keys", names.join("\t"));
-    }
 }
 function remove_select_list(name)
 {
     localStorage.removeItem("qd:select:" + name);
-    let names = get_select_lists_names().filter(n => n != name);
-    if(names.length == 0)
-    {
-        localStorage.removeItem("qd:select_keys");
-    }
-    else
-    {
-        localStorage.setItem("qd:select_keys", names.join("\t"));
-    }
 }
 function fill_saved_list() {
     $("#saved_lists").find('option').remove();
