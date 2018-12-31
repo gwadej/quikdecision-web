@@ -226,17 +226,13 @@
                                         placeholder="One string per line"></textarea><br />
                                     <button class="decide btn btn-outline-primary btn-sm mr-5" name="select" type="button">Select</button>
                                     <button class="btn btn-outline-primary btn-sm ml-5" id="name_list"
-                                            name="name_list" type="button" data-toggle="modal" data-target="#list_modal">Save</button>
+                                            name="name_list" type="button" data-toggle="modal" data-target="#list_modal">Save List</button>
                                 </form>
-                                <button id="rock_paper_scissors" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors</button><br />
-                                <button id="rpsls" class="btn btn-outline-secondary btn-sm">Rock/Paper/Scissors/Lizard/Spock</button><br />
-                                <button id="cuisine" class="btn btn-outline-secondary btn-sm">Cuisine</button>
-                                <button id="after_dinner" class="btn btn-outline-secondary btn-sm">After Dinner</button>
-                                <div class="mt-2">
+                                <div class="mt-3">
                                   <select class="custom-select" id="saved_lists">
                                     <option></option>
                                   </select>
-                                  <button id="saved" class="btn btn-outline-primary btn-sm">Load</button>
+                                  <button id="saved" class="btn btn-outline-primary btn-sm mt-1">Load List</button>
                                 </div>
                             </div>
                             <div class="col col-lg-8 answer"><span class="value"> </span></div>
@@ -355,11 +351,12 @@
       <div class="modal-body">
           <p>Selects one of the supplied strings with equal probability. There must be
           at least two strings to choose between. The strings should be entered one per line.</p>
-          <p>The <em>Save</em> button saves the current list under a name you supply. If you
+          <p>The <em>Save List</em> button saves the current list under a name you supply. If you
           save an empty list, it deletes the list that you name.</p>
-          <p>The middle cluster of buttons provide some example lists that you might find useful.</p>
-          <p>The menu at the bottom provides access to any lists you've saved. The <em>Load</em>
-          button populates the string list with the values you saved.</p>
+          <p>The menu at the bottom provides access to any lists you've saved, plus a few default
+          lists. The default lists a named starting with a <code>*</code> and will always be at
+          the end of the list. The <em>Load List</em> button populates the string list with the
+          values you saved.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
@@ -391,10 +388,7 @@ function make_decision(id, data) {
     })
     .fail(function(xhr, status) {
         let json = xhr.responseJSON;
-        if(json.error)
-        {
-            status = json.error;
-        }
+        if(json.error) { status = json.error; }
         $(id + "Error").show();
         $(id + "Error .msg").text(status);
     })
@@ -411,6 +405,11 @@ function make_decision(id, data) {
             },
         });
     })
+}
+function define_decision(id, data) {
+    $(id + " button.decide").click(function(event) {
+        make_decision(id, data);
+    });
 }
 function set_text_list(strings) {
     $("#strings").val(strings);
@@ -430,6 +429,12 @@ function remove_select_list(name)
 function fill_saved_list() {
     $("#saved_lists").find('option').remove();
     let saved = get_select_lists_names();
+    saved.push(
+        '* Cuisine',
+        '* After Dinner',
+        '* Rock/Paper/Scissors',
+        '* Rock/Paper/Scissors/Lizard/Spock',
+    );
     let options = '<option></option>';
     for(let i=0; i<saved.length; ++i) {
         options += '<option>' + saved[i] + '</option>';
@@ -437,58 +442,11 @@ function fill_saved_list() {
     $("#saved_lists").append(options);
 }
 $(document).on("keypress", ":input:not(textarea)", function(event) {
-    if (event.keyCode == 13) {
-        event.preventDefault();
-    }
+    if (event.keyCode == 13) { event.preventDefault(); }
 });
 $( document ).ready(function() {
-    $(".errmsg").hide();
-    $(".answer").hide();
-    $("#coin button.decide").click(function(event) {
-        make_decision("#coin", {});
-    });
-    $("#dice button.decide").click(function(event) {
-        make_decision("#dice");
-    });
-    $("#oracle button.decide").click(function(event) {
-        make_decision("#oracle");
-    });
-    $("#likely button.decide").click(function(event) {
-        make_decision("#likely");
-    });
-    $("#pick button.decide").click(function(event) {
-        make_decision("#pick");
-    });
-    $("#select button.decide").click(function(event) {
-        make_decision("#select");
-    });
-    $("#save_list").click(function(event) {
-        let name = $("#list_name").val();
-        if(name)
-        {
-            let value = $("#strings").val();
-            if(value)
-            {
-                add_select_list(name, value);
-            }
-            else
-            {
-                remove_select_list(name);
-            }
-            $("#list_name").val("");
-            fill_saved_list();
-        }
-        $('#list_modal').modal('hide')
-        return false;
-    });
-    $("#rock_paper_scissors").click(function(event) {
-        set_text_list("Rock\nPaper\nScissors");
-    });
-    $("#rpsls").click(function(event) {
-        set_text_list("Rock\nPaper\nScissors\nLizard\nSpock");
-    });
-    $("#cuisine").click(function(event) {
-        set_text_list([
+    var examples = {
+        '* Cuisine': [
             "Burgers", "BBQ",
             "Italian", "French",
             "Pizza",   "Tex-Mex",
@@ -497,23 +455,44 @@ $( document ).ready(function() {
             "Indian",  "Chinese",
             "Thai",    "Vietnamese",
             "Sushi",   "Steak"
-        ].join("\n"));
-    });
-    $("#after_dinner").click(function(event) {
-        set_text_list([
+        ].join("\n"),
+        '* After Dinner': [
             "Bubble Tea", "Cheesecake",
             "Coffee",     "Cookies",
             "Frozen Yogurt", "Gelato",
             "Ice Cream", "Pastries",
             "Pie"
-        ].join("\n"));
+        ].join("\n"),
+        '* Rock/Paper/Scissors': "Rock\nPaper\nScissors",
+        '* Rock/Paper/Scissors/Lizard/Spock': "Rock\nPaper\nScissors\nLizard\nSpock",
+    };
+    $(".errmsg").hide();
+    $(".answer").hide();
+    define_decision("#coin", {});
+    define_decision("#dice");
+    define_decision("#oracle", {});
+    define_decision("#likely");
+    define_decision("#pick");
+    define_decision("#select");
+    $("#save_list").click(function(event) {
+        let name = $("#list_name").val();
+        if(name && !examples[name])
+        {
+            let value = $("#strings").val();
+            if(value) { add_select_list(name, value); }
+            else      { remove_select_list(name); }
+            $("#list_name").val("");
+            fill_saved_list();
+        }
+        $('#list_modal').modal('hide')
+        return false;
     });
     fill_saved_list();
     $("#saved").click(function(event) {
         let name = $("#saved_lists").val();
         if(name)
         {
-            set_text_list(localStorage.getItem("qd:select:" + name));
+            set_text_list(examples[name] || localStorage.getItem("qd:select:" + name));
         }
         return false;
     });
