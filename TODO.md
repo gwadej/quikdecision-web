@@ -1,8 +1,11 @@
-   * Leave off tagline
+# TODO for QuikDecision web application
+
    * Bunny icon for quik like a bunny
-   * Icons for the different decision types
    * Maybe make the copyright less subtle now
-   * Move quikdecision.html to a different directory
-   * Add static route that reads files in the static directory
-   * Add privacy notice back
-   * Add attribution file for the noun icons above
+   * Expand openapi.yaml docs to do a better job with help
+   * Make certain that Help for each tab matches the library help
+   * Provide better help interface for QuikDecision
+      - API endpoint returning help?
+      - FAQ pages describing functionality
+   * Improve styling on main page
+   * Add styling to static pages
