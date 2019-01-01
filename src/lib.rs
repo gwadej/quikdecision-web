@@ -95,7 +95,10 @@ pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), String>
 fn split_strings(strings: &str) -> Vec<String>
 {
     let sep = if strings.contains("\n") { "\n" } else { "," };
-    strings.split(sep).map(|s| s.to_string()).collect::<Vec<String>>()
+    strings.split(sep)
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_string())
+        .collect::<Vec<String>>()
 }
 
 pub fn select_params(opt_query: Option<&str>) -> Result<Vec<String>, &str>

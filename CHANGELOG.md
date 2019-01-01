@@ -6,16 +6,15 @@ in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.9.2] - 2019-01-01
 ## Added
 - Ability to save dice expressions.
-## Changed
-- Added meta tags to the main page.
-- Tweak spacing between buttons on list selection tab.
-
-## [0.9.2] - 2018-12-30
+- Added ability to remove saved items
 ## Changed
 - Combined user-saved and example lists into one drop-down menu.
+- Added meta tags to the main page.
+- Tweak spacing between buttons on list selection tab.
+- Protect against empty strings in lists.
 ## Removed
 - Removed the example list buttons.
 
