@@ -1,10 +1,17 @@
 openapi: 3.0.1
 info:
   title: QuikDecision
-  description: Tool for making random decisions.
-  version: "0.9.0"
+  description: "Can't decide? QuikDecision's here to help. Flip a coin. Roll the dice. Ask the Oracle. And more."
+  version: "0.9.2"
+  contact:
+    name: 'QuikDecision Support'
+    email: 'qd@gwadej.org'
+  license:
+    name: 'Creative Commons Attribution License 3.0 Unported'
+    url: 'https://creativecommons.org/licenses/by/3.0/legalcode'
 servers:
   - url: 'http://qd.gwadej.org'
+    description: Production Server
 paths:
   /roll:
     get:
@@ -30,7 +37,9 @@ paths:
                 properties:
                   value:
                     type: integer
+                    format: int32
                     minimum: 1
+                    description: 'The value resulting from summing the various dice rolls'
                   extra:
                     type: string
                     description: 'Normal dice are represented by the expression, followed by the results of the individual die rolls in parens: 3d6(3+5+1).
@@ -41,10 +50,7 @@ Exploding dice are represented by the dice expression followed by an expression 
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/Error'
   /pick:
     get:
       description: Pick a number between low and high inclusive.
@@ -54,12 +60,14 @@ Exploding dice are represented by the dice expression followed by an expression 
           required: true
           schema:
             type: integer
+            format: int32
           example: 1
         - name: high
           in: query
           required: true
           schema:
             type: integer
+            format: int32
           example: 10
       responses:
         '200':
@@ -71,15 +79,13 @@ Exploding dice are represented by the dice expression followed by an expression 
                 properties:
                   value:
                     type: integer
+                    format: int32
         '400':
           description: Missing or invalid parameters.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/Error'
   /flip:
     get:
       description: Simulate flipping a fair coin.
@@ -93,7 +99,7 @@ Exploding dice are represented by the dice expression followed by an expression 
                 properties:
                   value:
                     type: string
-                    pattern: 'Heads|Tails'
+                    pattern: '^(Heads|Tails)$'
   /likelihood:
     get:
       description: Return true the specified percent of the time.
@@ -121,10 +127,7 @@ Exploding dice are represented by the dice expression followed by an expression 
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/Error'
   /select:
     get:
       description: Select one of the supplied strings with equal probability
@@ -153,10 +156,7 @@ Exploding dice are represented by the dice expression followed by an expression 
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                $ref: '#/components/schemas/Error'
   /oracle:
     get:
       description: "This command returns a string randomly selected from the Oracle's set of 9 positive answers, 9 negative answers, or 6 indeterminate answers."
@@ -173,3 +173,10 @@ Exploding dice are represented by the dice expression followed by an expression 
                     description: 'The actual answer'
                   label:
                     type: string
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string

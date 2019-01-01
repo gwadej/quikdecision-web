@@ -49,7 +49,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match load_file("static/openapi.yaml")
             {
                 Ok(content) => Response::builder()
-                        .header("Content-Type", "application/yaml")
+                        .header("Content-Type", "text/yaml")
                         .body(Body::from(content))
                         .unwrap(),
                 Err(msg) => report_error(&msg),
@@ -157,7 +157,7 @@ fn find_type(ext: Option<&OsStr>) -> &'static str
         Some("jpg") | Some("jpeg") => "image/jpeg",
         Some("js") => "application/javascript",
         Some("json") => "application/json",
-        Some("yaml") => "application/yaml",
+        Some("yaml") => "text/yaml",
         Some("png") => "image/png",
         Some("svg") => "image/svg+xml",
         None | Some("txt") | Some(_) => "text/plain",
