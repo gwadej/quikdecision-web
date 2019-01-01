@@ -133,12 +133,20 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col col-lg-3">
-                            <form method="GET" action="/roll">
+                              <form method="GET" action="/roll">
                                 <label for="expr">Dice Expression:</label>
-                                <input id="expr" name="expr" type="text" width="100"
+                                <input id="expr" name="expr" type="text" size="25" class="mb-1"
                                    value="" placeholder="Like 3d6 or d12 + 2d6"/><br />
-                                <button class="decide btn btn-outline-primary btn-sm" name="roll" type="button">Roll</button>
-                            </form>
+                                <button class="decide btn btn-outline-primary btn-sm mr-5" name="roll" type="button">Roll</button>
+                                <button class="btn btn-outline-primary btn-sm ml-4" id="expr_list"
+                                        name="expr_list" type="button" data-toggle="modal" data-target="#dice_saved_modal">Save Expression</button>
+                              </form>
+                              <div class="mt-3">
+                                <select class="custom-select" id="dice_saved_names">
+                                  <option></option>
+                                </select>
+                                <button id="dice_load" class="btn btn-outline-primary btn-sm mt-1">Load Expression</button>
+                              </div>
                             </div>
                             <div class="col col-lg-9 answer">Value: <span class="value"> </span><br />
                                 Roll: <span class="extra"> </span></div>
@@ -230,13 +238,13 @@
                                         placeholder="One string per line"></textarea><br />
                                     <button class="decide btn btn-outline-primary btn-sm mr-5" name="select" type="button">Select</button>
                                     <button class="btn btn-outline-primary btn-sm ml-4" id="name_list"
-                                            name="name_list" type="button" data-toggle="modal" data-target="#list_modal">Save List</button>
+                                            name="name_list" type="button" data-toggle="modal" data-target="#select_saved_modal">Save List</button>
                                 </form>
                                 <div class="mt-3">
-                                  <select class="custom-select" id="saved_lists">
+                                  <select class="custom-select" id="select_saved_names">
                                     <option></option>
                                   </select>
-                                  <button id="saved" class="btn btn-outline-primary btn-sm mt-1">Load List</button>
+                                  <button id="select_load" class="btn btn-outline-primary btn-sm mt-1">Load List</button>
                                 </div>
                             </div>
                             <div class="col col-lg-8 answer"><span class="value"> </span></div>
@@ -250,12 +258,25 @@
         </div> <!-- deciders -->
     </div> <!-- row -->
 <!-- Modals -->
-<div class="modal" id="list_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="dice_saved_modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
         <form>
-          <input type="text" name="list_name" id="list_name" placeholder="Name for saved list" value="" />
+          <input type="text" name="saved_expr_name" id="saved_expr_name" placeholder="Name for saved dice expression" value="" />
+          <button class="btn btn-outline-primary btn-sm float-right" id="save_expr"
+                  name="save_expr" type="button">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="select_saved_modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form>
+          <input type="text" name="saved_list_name" id="saved_list_name" placeholder="Name for saved value" value="" />
           <button class="btn btn-outline-primary btn-sm float-right" id="save_list"
                   name="save_list" type="button">Save</button>
         </form>
@@ -415,35 +436,44 @@ function define_decision(id, data) {
         make_decision(id, data);
     });
 }
-function set_text_list(strings) {
-    $("#strings").val(strings);
-}
-function get_select_lists_names()
+function prefix(key) { return "qd:" + key + ":"; }
+function get_saved_names(key)
 {
-    return Object.keys(localStorage).filter(k => k.startsWith("qd:select:")).map(k => k.substring(10));
+    let fkey = prefix(key);
+    return Object.keys(localStorage)
+            .filter(k => k.startsWith(fkey))
+            .map(k => k.substring(fkey.length));
 }
-function add_select_list(name, value)
+function add_saved(key, name, value)
 {
-    localStorage.setItem("qd:select:" + name, value);
+    localStorage.setItem(prefix(key) + name, value);
 }
-function remove_select_list(name)
+function get_saved(key, name)
 {
-    localStorage.removeItem("qd:select:" + name);
+    return localStorage.getItem(prefix(key) + name);
 }
-function fill_saved_list() {
-    $("#saved_lists").find('option').remove();
-    let saved = get_select_lists_names();
-    saved.push(
-        '* Cuisine',
-        '* After Dinner',
-        '* Rock/Paper/Scissors',
-        '* Rock/Paper/Scissors/Lizard/Spock',
-    );
+function remove_saved(key, name)
+{
+    localStorage.removeItem(prefix(key) + name);
+}
+function fill_saved_list(key) {
+    let id = key + "_saved_names";
+    $("#" + id).find('option').remove();
+    let saved = get_saved_names(key);
+    if(key == "select")
+    {
+        saved.push(
+            '* Cuisine',
+            '* After Dinner',
+            '* Rock/Paper/Scissors',
+            '* Rock/Paper/Scissors/Lizard/Spock',
+        );
+    }
     let options = '<option></option>';
     for(let i=0; i<saved.length; ++i) {
         options += '<option>' + saved[i] + '</option>';
     }
-    $("#saved_lists").append(options);
+    $("#" + id).append(options);
 }
 $(document).on("keypress", ":input:not(textarea)", function(event) {
     if (event.keyCode == 13) { event.preventDefault(); }
@@ -478,30 +508,57 @@ $( document ).ready(function() {
     define_decision("#likely");
     define_decision("#pick");
     define_decision("#select");
+    $("#save_expr").click(function(event) {
+        let name = $("#saved_expr_name").val();
+        let key = "dice";
+        if(name)
+        {
+            let value = $("#expr").val();
+            if(value) { add_saved(key, name, value); }
+            else      { remove_saved(key, name); }
+            $("#saved_expr_name").val("");
+            fill_saved_list(key);
+        }
+        $('#dice_saved_modal').modal('hide')
+        return false;
+    });
     $("#save_list").click(function(event) {
-        let name = $("#list_name").val();
+        let name = $("#saved_list_name").val();
+        let key = "select";
         if(name && !examples[name])
         {
             let value = $("#strings").val();
-            if(value) { add_select_list(name, value); }
-            else      { remove_select_list(name); }
-            $("#list_name").val("");
-            fill_saved_list();
+            if(value) { add_saved(key, name, value); }
+            else      { remove_saved(key, name); }
+            $("#saved_list_name").val("");
+            fill_saved_list(key);
         }
-        $('#list_modal').modal('hide')
+        $('#select_saved_modal').modal('hide')
         return false;
     });
-    fill_saved_list();
-    $("#saved").click(function(event) {
-        let name = $("#saved_lists").val();
+    fill_saved_list("select");
+    fill_saved_list("dice");
+    $("#select_load").click(function(event) {
+        let name = $("#select_saved_names").val();
         if(name)
         {
-            set_text_list(examples[name] || localStorage.getItem("qd:select:" + name));
+            $("#strings").val(examples[name] || get_saved("select", name));
         }
         return false;
     });
-    $('#list_modal').on('shown.bs.modal', function () {
-        $('#list_name').trigger('focus')
+    $("#dice_load").click(function(event) {
+        let name = $("#dice_saved_names").val();
+        if(name)
+        {
+            $("#expr").val(get_saved("dice", name));
+        }
+        return false;
+    });
+    $('#select_saved_modal').on('shown.bs.modal', function () {
+        $('#saved_list_name').trigger('focus')
+    });
+    $('#dice_saved_modal').on('shown.bs.modal', function () {
+        $('#saved_expr_name').trigger('focus')
     });
 });
 </script>
