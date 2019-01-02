@@ -290,7 +290,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
-            Returns one of the two strings <em>Heads</em> or <em>Tails</em>. There is an equal probability of returning either one.
+        Returns one of the two strings <em>Heads</em> or <em>Tails</em>.
+        There is an equal probability of returning either one.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
@@ -298,30 +299,36 @@
     </div>
   </div>
 </div>
-
 <div class="modal fade" id="diceHelp" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
-            <p>Roll the described combination of dice, returning a number and description of the
-            roll. The <em>dice expr</em> is a combination of terms of one of three forms joined by <code>+</code>:</p>
-            <ul>
-                <li>{n}d{s}: roll n s-sided dice (3d6)</li>
-                <li>{n}x{s}: roll n s-sided exploding dice (2x8)</li>
-                <li>{n}: an increment.</li>
-            </ul>
-            <p>The number of sides supported are 3, 4, 6, 8, 10, 12, 20, or 100. Exploding dice
-            work much like normal, except when a die rolls the maximum value for the die,
-            then it is re-rolled to generate a value to add to the original roll. This may
-            happen more than once.</p>
-            <p>The <em>Value</em> is the sum of all of the rolls. The <em>Roll</em> is a string representing the
-            individual rolls.</p>
-            <p>Normal dice are represented by the expression, followed by the results of the
-            individual die rolls in parens: <code>3d6(3+5+1)</code>.</p>
-            <p>Exploding dice are represented by the dice expression followed by an expression
-            in angle brackets. The expression is made of the results of each individual die
-            in parens, with any die that exploded being followed by an <code>!</code>, and the re-roll
-            added as needed: <code>3x6&lt;(1)+(6!+5)+(2)&gt;</code>.</p>
+          <p>Roll the described combination of dice, returning a number and description of the
+          roll. The <em>dice expr</em> is a combination of terms of one of three forms joined by <code>+</code>:</p>
+          <ul>
+              <li>{n}d{s}: roll n s-sided dice (3d6)</li>
+              <li>{n}x{s}: roll n s-sided exploding dice (2x8)</li>
+              <li>{n}: an increment.</li>
+          </ul>
+          <p>The number of sides supported are 3, 4, 6, 8, 10, 12, 20, or 100. Exploding dice
+          work much like normal, except when a die rolls the maximum value for the die,
+          then it is re-rolled to generate a value to add to the original roll. This may
+          happen more than once.</p>
+          <p>The <em>Value</em> is the sum of all of the rolls. The <em>Roll</em> is a string representing the
+          individual rolls.</p>
+          <p>Normal dice are represented by the expression, followed by the results of the
+          individual die rolls in parens: <code>3d6(3+5+1)</code>.</p>
+          <p>Exploding dice are represented by the dice expression followed by an expression
+          in angle brackets. The expression is made of the results of each individual die
+          in parens, with any die that exploded being followed by an <code>!</code>, and the re-roll
+          added as needed: <code>3x6&lt;(1)+(6!+5)+(2)&gt;</code>.</p>
+          <p>The <em>Save Expression</em> button saves the current dice expression under a name
+          you supply. If you save an empty expression, it deletes the one that you name.</p>
+          <p>The menu at the bottom provides access to any expressions you've saved, plus a few
+          default ones. The default expressions are named starting with a <code>*</code> and will
+          always be at the end of the list. The <em>Load Expression</em> button populates the expression
+          with the value you saved. The <em>Remove Expression</em> button deletes the specified
+          saved expression.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
@@ -381,9 +388,9 @@
           <p>The <em>Save List</em> button saves the current list under a name you supply. If you
           save an empty list, it deletes the list that you name.</p>
           <p>The menu at the bottom provides access to any lists you've saved, plus a few default
-          lists. The default lists a named starting with a <code>*</code> and will always be at
+          lists. The default lists are named starting with a <code>*</code> and will always be at
           the end of the list. The <em>Load List</em> button populates the string list with the
-          values you saved.</p>
+          values you saved. The <em>Remove List</em> button deletes the specified saved list.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
