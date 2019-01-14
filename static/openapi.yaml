@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: QuikDecision
   description: "Can't decide? QuikDecision's here to help. Flip a coin. Roll the dice. Ask the Oracle. And more."
-  version: "0.9.2"
+  version: "0.9.3"
   contact:
     name: 'QuikDecision Support'
     email: 'qd@gwadej.org'
@@ -151,6 +151,37 @@ Exploding dice are represented by the dice expression followed by an expression 
                   value:
                     type: string
                     description: 'One of the strings supplied.'
+        '400':
+          description: Invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /shuffle:
+    get:
+      description: Randomly re-order the supplied group of strings
+      parameters:
+        - name: strings
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Randomly change the order of the supplied strings. There must be at least two strings to choose between. The strings should be entered one per line. Strings
+            can also be separated by commas.'
+          example: 'david,mark,connie,kirsten'
+      responses:
+        '200':
+          description: Selected string.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    description: 'The list of strings supplied in a new order'
+                    type: array
+                    items:
+                      type: string
         '400':
           description: Invalid parameters.
           content:

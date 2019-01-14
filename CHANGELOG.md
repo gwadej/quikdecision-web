@@ -6,6 +6,12 @@ in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+## Changed
+- Update license for website.
+- Add MIT license for code.
+- Fill out more metadata for OpenAPI spec.
+
 ## [0.9.2] - 2019-01-01
 ## Added
 - Ability to save dice expressions.

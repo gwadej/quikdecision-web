@@ -23,6 +23,7 @@ pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
                 Decision::Num(value) => { json!({ "value": value }) },
                 Decision::AnnotatedNum{value, extra} => { json!({ "value": value, "extra": extra }) },
                 Decision::Bool(value) => { json!({ "value": value }) },
+                Decision::List(strings) => { json!({ "list": strings }) }
             }.to_string())
         },
         Err(msg) => {

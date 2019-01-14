@@ -14,7 +14,7 @@ use std::ffi::OsStr;
 use std::env;
 use std::net::IpAddr;
 
-use quikdecision::{coin,dice,oracle,percent,pick,select};
+use quikdecision::{coin,dice,oracle,percent,pick,select,shuffle};
 
 use qdweb::*;
 
@@ -99,6 +99,15 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match select_params(req.uri().query())
             {
                 Ok(strvec) => process_command(select::command(strvec)),
+                Err(msg) => report_error(msg),
+            }
+        }
+
+        // Select string
+        (&Method::GET, "/shuffle") => {
+            match select_params(req.uri().query())
+            {
+                Ok(strvec) => process_command(shuffle::command(strvec)),
                 Err(msg) => report_error(msg),
             }
         }

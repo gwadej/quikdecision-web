@@ -1,6 +1,6 @@
 [package]
 name = "quikdecision-web"
-version = "0.9.2"
+version = "0.9.3"
 authors = ["G. Wade Johnson <gwadej@anomaly.org>"]
 description = "Make random decisions using one of a few different methods."
 readme = "README.md"
@@ -11,7 +11,7 @@ edition = "2018"
 
 [dependencies]
 
-rand = "0.5.5"
+rand = "0.6.1"
 regex = "1"
 quikdecision = { git = "https://github.com/gwadej/quikdecision_rust" }
 hyper = "0.12"
