@@ -87,6 +87,10 @@
                 <img src="/static/noun_Dice_1765632.svg" class="button-img" alt="Roll the Dice"/>
                 <span class="button-text">Roll the Dice</span>
             </button></li>
+            <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseDeck" aria-expanded="false" aria-controls="collapseDeck">
+                <img src="/static/noun_Cards_415289.svg" class="button-img" alt="Draw a Card"/>
+                <span class="button-text">Draw a Card</span>
+            </button></li>
             <li><button class="btn float-right btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseOracle" aria-expanded="false" aria-controls="collapseOracle">
                 <img src="/static/noun_Fortune-Telling_1728520.svg" class="button-img" alt="Ask the Oracle"/>
                 <span class="button-text">Ask the Oracle</span>
@@ -114,12 +118,12 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col col-lg-3">
+                            <div class="col col-lg-4">
                                 <form method="GET" action="/flip">
                                     <button class="decide btn btn-outline-primary btn-sm" name="flip" type="button">Flip</button>
                                 </form>
                             </div>
-                            <div class="col col-lg-9 answer"> <span class="value"> </span> </div>
+                            <div class="col col-lg-8 answer"> <span class="value"> </span> </div>
                         </div>
                     </div>
                 </div>
@@ -132,13 +136,13 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col col-lg-3">
+                            <div class="col col-lg-4">
                               <form method="GET" action="/roll">
                                 <label for="expr">Dice Expression:</label>
                                 <input id="expr" name="expr" type="text" size="25" class="mb-1"
                                    value="" placeholder="Like 3d6 or d12 + 2d6"/><br />
-                                <button class="decide btn btn-outline-primary btn-sm mr-5" name="roll" type="button">Roll</button>
-                                <button class="btn btn-outline-primary btn-sm ml-4" id="expr_list"
+                                <button class="decide btn btn-outline-primary btn-sm mr-5 mr-md-3" name="roll" type="button">Roll</button>
+                                <button class="btn btn-outline-primary btn-sm ml-4 ml-md-2" id="expr_list"
                                         name="expr_list" type="button" data-toggle="modal" data-target="#dice_saved_modal">Save Expression</button>
                               </form>
                               <div class="mt-3">
@@ -149,10 +153,39 @@
                                 <button id="dice_remove" class="btn btn-outline-primary btn-sm">Remove Expression</button>
                               </div>
                             </div>
-                            <div class="col col-lg-9 answer">Value: <span class="value"> </span><br />
+                            <div class="col col-lg-8 answer">Value: <span class="value"> </span><br />
                                 Roll: <span class="extra"> </span></div>
                         </div>
                         <div id="diceError" class="row errmsg">
+                            <div class="col alert alert-danger">Error: <span class="msg"> </span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="collapseDeck" class="collapse" data-parent="#deciders">
+                <div id="deck" class="card">
+                    <div class="card-header">
+                        <button class="btn float-right btn-outline-secondary btn-sm" data-toggle="modal" data-target="#deckHelp">?</button>
+                        <h5 class="card-title">Draw a Card</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col col-lg-4">
+                                <form method="GET" action="/draw">
+                                    <label for="deck">Deck type</label><br />
+                                    <select class="custom-select" name="deck" id="deck">
+                                        <option value="52-card">Standard 52 card deck</option>
+                                        <option value="jokers">Standard and 2 jokers</option>
+                                        <option value="tarot">Traditional Tarot deck</option>
+                                    </select>
+                                    <button class="decide btn btn-outline-primary btn-sm" name="draw" type="button">Draw Card</button>
+                                </form>
+                            </div>
+                            <div class="col col-lg-8 answer"><span class="value"> </span><br />
+<!--                                <span class="glyph ml-4 mt-1"> </span> -->
+                            </div>
+                        </div>
+                        <div id="deck" class="row errmsg">
                             <div class="col alert alert-danger">Error: <span class="msg"> </span></div>
                         </div>
                     </div>
@@ -166,12 +199,12 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col col-lg-3">
+                            <div class="col col-lg-4">
                                 <form method="GET" action="/oracle">
                                     <button class="decide btn btn-outline-primary btn-sm" name="ask" type="button">Ask</button>
                                 </form>
                             </div>
-                            <div class="col col-lg-9 answer">
+                            <div class="col col-lg-8 answer">
                                 <span class="label"> </span>
                                 <span class="value"> </span>
                             </div>
@@ -187,14 +220,14 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col col-lg-3">
+                            <div class="col col-lg-4">
                                 <form method="GET" action="/likelihood">
                                     <label for="percent">True <input id="percent" name="percent" type="number" min="1" max="99" value="50"/>
                                         percent of the time</label><br />
                                     <button class="decide btn btn-outline-primary btn-sm" name="guess" type="button">Guess</button>
                                 </form>
                             </div>
-                            <div class="col col-lg-9 answer"><span class="value"> </span></div>
+                            <div class="col col-lg-8 answer"><span class="value"> </span></div>
                         </div>
                         <div id="likelyError" class="row errmsg">
                             <div class="col alert alert-danger">Error: <span class="msg"> </span></div>
@@ -210,14 +243,14 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col col-lg-3">
+                            <div class="col col-lg-4">
                                 <form method="GET" action="/pick">
                                     <label for="low">Low:</label> <input id="low" name="low" type="number" value="1"/><br />
                                     <label for="high">High:</label> <input id="high" name="high" type="number" value="10"/><br />
                                     <button class="decide btn btn-outline-primary btn-sm" name="pick" type="button">Pick</button>
                                 </form>
                             </div>
-                            <div class="col col-lg-9 answer"><span class="value"> </span></div>
+                            <div class="col col-lg-8 answer"><span class="value"> </span></div>
                         </div>
                         <div id="pickError" class="row errmsg">
                             <div class="col alert alert-danger">Error: <span class="msg"> </span></div>
@@ -233,12 +266,12 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col col-lg-3">
+                            <div class="col col-lg-4">
                                 <form method="GET" class="mb-2" action="/select">
                                     <textarea cols="30" rows="5" id="strings" name="strings"
                                         placeholder="One string per line"></textarea><br />
-                                    <button class="decide btn btn-outline-primary btn-sm mr-5" name="select" type="button">Select</button>
-                                    <button class="btn btn-outline-primary btn-sm ml-4" id="name_list"
+                                    <button class="decide btn btn-outline-primary btn-sm mr-5 mr-md-3" name="select" type="button">Select</button>
+                                    <button class="btn btn-outline-primary btn-sm ml-4 mr-md-2" id="name_list"
                                             name="name_list" type="button" data-toggle="modal" data-target="#select_saved_modal">Save List</button>
                                 </form>
                                 <div class="mt-3">
@@ -329,6 +362,19 @@
           always be at the end of the list. The <em>Load Expression</em> button populates the expression
           with the value you saved. The <em>Remove Expression</em> button deletes the specified
           saved expression.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deckHelp" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+          Draw a random card from the specified deck.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Close</button>
@@ -542,6 +588,7 @@ $( document ).ready(function() {
     $(".answer").hide();
     define_decision("#coin", {});
     define_decision("#dice");
+    define_decision("#deck");
     define_decision("#oracle", {});
     define_decision("#likely");
     define_decision("#pick");

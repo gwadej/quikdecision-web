@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - API support for shuffling a list of strings
 - API support for drawing a card from one of 3 deck types
+- UI support for drawing a card from one of 3 deck types
 ## Changed
 - Update license for website.
 - Add MIT license for code.
