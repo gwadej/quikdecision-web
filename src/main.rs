@@ -14,7 +14,7 @@ use std::ffi::OsStr;
 use std::env;
 use std::net::IpAddr;
 
-use quikdecision::{coin,dice,oracle,percent,pick,select,shuffle};
+use quikdecision::{coin,dice,deck,oracle,percent,pick,select,shuffle};
 
 use qdweb::*;
 
@@ -68,6 +68,16 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             {
                 Some(expr) => process_command(dice::command(expr.to_string())),
                 None => report_error("Missing required 'expr'."),
+            }
+        }
+
+        // Draw card
+        (&Method::GET, "/draw") => {
+            let params = query_params(req.uri().query());
+            match params.get("deck")
+            {
+                Some(deck) => process_command(deck::command(deck)),
+                None => report_error("Missing required 'deck'."),
             }
         }
 

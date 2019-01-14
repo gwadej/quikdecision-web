@@ -24,6 +24,14 @@ pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
                 Decision::AnnotatedNum{value, extra} => { json!({ "value": value, "extra": extra }) },
                 Decision::Bool(value) => { json!({ "value": value }) },
                 Decision::List(strings) => { json!({ "list": strings }) }
+                Decision::Card(card) => {
+                    json!({
+                        "value":  card.to_string(),
+                        "suit":   card.suit(),
+                        "number": card.value(),
+                        "glyph":  card.glyph(),
+                    })
+                },
             }.to_string())
         },
         Err(msg) => {

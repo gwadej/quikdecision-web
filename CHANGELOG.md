@@ -6,7 +6,10 @@ in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.9.5] - 2019-01-13
+## Added
+- API support for shuffling a list of strings
+- API support for drawing a card from one of 3 deck types
 ## Changed
 - Update license for website.
 - Add MIT license for code.

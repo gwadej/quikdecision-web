@@ -51,6 +51,43 @@ Exploding dice are represented by the dice expression followed by an expression 
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /draw:
+    get:
+      description: Draw a card from the specified deck
+      parameters:
+        - name: deck
+          in: query
+          required: true
+          schema:
+            type: string
+          example: 52-card
+      responses:
+        '200':
+          description: Description of the chosen card
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    description: Standard description of the chosen card in English.
+                    type: string
+                  suit:
+                    description: "String specifying the suit of the card. Jokers have no suit. Trump card have the suit 'Trumps'."
+                    type: string
+                  number:
+                    description: "Numeric value of the card. Face cards have values above 10. Trumps have their own values. Jokers have a value of 0."
+                    type: integer
+                    format: int32
+                  glyph:
+                    description: "Unicode character representing the card."
+                    type: string
+        '400':
+          description: Invalid or missing deck type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /pick:
     get:
       description: Pick a number between low and high inclusive.
