@@ -11,6 +11,7 @@ edition = "2018"
 
 [dependencies]
 
+eyre = "0.6.0"
 rand = "0.6.1"
 regex = "1"
 quikdecision = { git = "https://github.com/gwadej/quikdecision_rust" }

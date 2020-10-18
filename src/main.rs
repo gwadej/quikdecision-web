@@ -24,7 +24,7 @@ use qdweb::*;
 ///
 /// A boxed Future (trait object) is used as it is easier to understand
 /// and extend with more types. Advanced users could switch to `Either`.
-type BoxFut = Box<Future<Item = Response<Body>, Error = hyper::Error> + Send>;
+type BoxFut = Box<dyn Future<Item = Response<Body>, Error = hyper::Error> + Send>;
 
 /// This is our service handler. It receives a Request, routes on its
 /// path, and returns a Future of a Response.
@@ -91,7 +91,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match percent_params(req.uri().query())
             {
                 Ok(percent) => process_command(percent::command(percent)),
-                Err(msg) => report_error(msg.as_str()),
+                Err(msg) => report_error(msg.to_string().as_str()),
             }
         }
 
@@ -100,7 +100,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match pick_params(req.uri().query())
             {
                 Ok((low, high)) => process_command(pick::command(low, high)),
-                Err(msg) => report_error(msg.as_str()),
+                Err(msg) => report_error(msg.to_string().as_str()),
             }
         }
 
@@ -109,7 +109,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match select_params(req.uri().query())
             {
                 Ok(strvec) => process_command(select::command(strvec)),
-                Err(msg) => report_error(msg),
+                Err(msg) => report_error(msg.to_string().as_str()),
             }
         }
 
@@ -118,7 +118,7 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
             match select_params(req.uri().query())
             {
                 Ok(strvec) => process_command(shuffle::command(strvec)),
-                Err(msg) => report_error(msg),
+                Err(msg) => report_error(msg.to_string().as_str()),
             }
         }
 

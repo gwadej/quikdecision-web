@@ -4,13 +4,14 @@ extern crate quikdecision;
 extern crate serde_json;
 extern crate percent_encoding;
 
+use eyre::eyre;
 use std::collections::HashMap;
 use hyper::{Body,  Response, StatusCode};
 use percent_encoding::percent_decode;
 
-use quikdecision::{Command, Decision, Decider};
+use quikdecision::{Command, Decision, Decider, Result};
 
-pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
+pub fn process_command(cmdres: Result<Command>) -> Response<Body>
 {
     let mut builder = Response::builder();
     let body = match cmdres
@@ -36,7 +37,7 @@ pub fn process_command(cmdres: Result<Command,String>) -> Response<Body>
         },
         Err(msg) => {
             builder.status(StatusCode::BAD_REQUEST);
-            Body::from(json!({ "error": msg }).to_string())
+            Body::from(json!({ "error": msg.to_string() }).to_string())
         },
     };
     builder
@@ -76,21 +77,21 @@ pub fn report_error(msg: &str) -> Response<Body>
         .unwrap()
 }
 
-pub fn percent_params(opt_query: Option<&str>) -> Result<u32, String>
+pub fn percent_params(opt_query: Option<&str>) -> eyre::Result<u32>
 {
     extract_int::<u32>(&query_params(opt_query), "percent")
 }
 
-fn extract_int<T>(params: &HashMap<&str,String>, key: &str) -> Result<T, String>
+fn extract_int<T>(params: &HashMap<&str,String>, key: &str) -> eyre::Result<T>
     where T: std::str::FromStr
 {
     params.get(key)
-        .ok_or(format!("Missing required '{}'.", key))
+        .ok_or_else(|| eyre!("Missing required '{}'.", key))
         .and_then(|l| l.parse::<T>()
-                  .map_err(|_| format!("'{}' value must be an integer", key)))
+                  .map_err(|_| eyre!("'{}' value must be an integer", key)))
 }
 
-pub fn pick_params(opt_query: Option<&str>) -> Result<(i32, i32), String>
+pub fn pick_params(opt_query: Option<&str>) -> eyre::Result<(i32, i32)>
 {
     let params = query_params(opt_query);
     match (extract_int::<i32>(&params, "low"),
@@ -110,9 +111,9 @@ fn split_strings(strings: &str) -> Vec<String>
         .collect::<Vec<String>>()
 }
 
-pub fn select_params(opt_query: Option<&str>) -> Result<Vec<String>, &str>
+pub fn select_params(opt_query: Option<&str>) -> eyre::Result<Vec<String>>
 {
     query_params(opt_query).get("strings")
         .map(|s| split_strings(s))
-        .ok_or("Missing required 'strings'.")
+        .ok_or_else(|| eyre!("Missing required 'strings'."))
 }
