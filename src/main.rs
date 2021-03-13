@@ -139,11 +139,23 @@ fn quikdecision(req: Request<Body>) -> BoxFut {
     Box::new(future::ok(response))
 }
 
+fn has_path_traverse(path: &PathBuf) -> bool
+{
+    let up = Path::new("..").components().nth(0).unwrap();
+    path.components().find(|p| p == &up).is_some()
+}
+
 /// Create response for a static file specified in the URL, if it exists
 /// in the ./static/ directory.
 fn static_file(uri_path: PathBuf) -> Response<Body>
 {
     let mut builder = Response::builder();
+    if has_path_traverse(&uri_path) {
+        return builder
+            .status(StatusCode::NOT_FOUND)
+            .body(Body::from("Invalid path"))
+            .unwrap();
+    }
     match uri_path.strip_prefix("/static/")
     {
         Ok(path) => {
